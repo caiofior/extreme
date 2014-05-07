@@ -1,0 +1,4059 @@
+## Finestra immissione dati weighted means, creazione della funzione di restituzione dei valori.
+
+WM <- function(data,Area,N,R){
+y <- data.frame(get(data)[Area])
+if (exists(R,where=1) == T){
+t <<- rbind(get(R) , wm(N,y[,1],))
+guiEval(remove(R,where=1), R, removal=T)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+if (exists(R,where=1) == F){
+t <<- wm(N,y[,1])
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$Weighted mean",
+			Type="MenuItem",Action="Function",Command="WM",
+			MenuItemText="&Weighted mean")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="WMDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="WMArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property",Name="WMReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+guiCreate("Property", Name = "WMName", DialogPrompt = "Sample name",
+		DefaultValue = "Extremes", type="Normal", DialogControl = "String", UseQuotes=T);
+
+guiCreate("Property",Name="WMResults",
+		DialogPrompt="Results",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="WMDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("WMDataFrame","WMArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "WM",Function = "WM",
+		DialogHeader = "Weighted mean",StatusString = "Working",
+		PropertyList = c("WMDataGroup","WMReturn","WMName","WMResults"),
+		ArgumentList = "#0=WMReturn,#1=WMDataFrame,
+				#2=WMArea,#3=WMName,#4=WMResults")
+				
+
+
+## Finestra immissione dati Fit Range, creazione della funzione di restituzione dei valori.
+
+FR <- function(data,Area,FMin,FMax,Step){
+y <- data.frame(get(data)[Area])
+gpd.fitrange(y[,1],FMin,FMax,Step)
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$FR",
+			Type="MenuItem",Action="Function",Command="FR",
+			MenuItemText="&Fit range")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="FRDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="FRArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property", Name = "FRMin", Type = "Normal",
+		DialogPrompt = "Minimum", DialogControl = "Float" );
+
+guiCreate("Property",Name="FRReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+guiCreate("Property", Name = "FRMax", Type = "Normal",
+		DialogPrompt = "Maximum", DialogControl = "Float" );
+
+guiCreate("Property", Name = "FRStep", Type = "Normal",
+		DialogPrompt = "Step", DialogControl = "Integer" );
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="FRDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("FRDataFrame","FRArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "FR",Function = "FR",
+		DialogHeader = "Fit Range",StatusString = "Working",
+		PropertyList = c("FRDataGroup","FRMin","FRReturn","FRMax","FRStep"),
+		ArgumentList = "#0=FRReturn,#1=FRDataFrame,
+				#2=FRArea,#3=FRMin,#4=FRMax,#5=FRStep")
+
+
+
+
+
+
+
+## Finestra immissione dati IPD, creazione della funzione di restituzione dei valori.
+
+IPD <- function(data,Area,Threshold,N,Value,Sample,R){
+y <- data.frame(get(data)[Area])
+if (exists(R,where=1) == T){
+t <<- rbind(get(R) , gpd.i(N,y[,1],Threshold,Sample,Value))
+guiEval(remove(R,where=1), R, removal=T)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+if (exists(R,where=1) == F){
+t <<- gpd.i(N,y[,1],Threshold,Sample,Value)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$IPD",
+			Type="MenuItem",Action="Function",Command="IPD",
+			MenuItemText="&Invers GPD")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="IPDDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="IPDArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property", Name = "IPDThreshold", Type = "Normal",
+		DialogPrompt = "Threshold", DialogControl = "Float" );
+
+guiCreate("Property",Name="IPDReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+guiCreate("Property", Name = "IPDName", DialogPrompt = "Sample name",
+		DefaultValue = "Extremes", type="Normal", DialogControl = "String", UseQuotes=T);
+
+guiCreate("Property", Name = "IPDValue", Type = "Normal",
+		DialogPrompt = "Value", DialogControl = "Float" );
+
+guiCreate("Property", Name = "IPDSample", Type = "Normal",
+		DefaultValue = "1", DialogPrompt = "Sampling ratio", DialogControl = "Float" );
+
+guiCreate("Property",Name="IPDResults",
+		DialogPrompt="Results",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="IPDDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("IPDDataFrame","IPDArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "IPD",Function = "IPD",
+		DialogHeader = "Invers GPD Analisys",StatusString = "Working",
+		PropertyList = c("IPDDataGroup","IPDThreshold","IPDReturn","IPDName","IPDValue","IPDSample","IPDResults"),
+		ArgumentList = "#0=IPDReturn,#1=IPDDataFrame,
+				#2=IPDArea,#3=IPDThreshold,#4=IPDName,#5=IPDValue,#6=IPDSample,#7=IPDResults")
+
+
+
+
+
+
+## Finestra immissione dati Invers GEV, creazione della funzione di restituzione dei valori.
+
+IEV <- function(data,Image,Area,N,Value,Sample,R){
+x <- data.frame(get(data)[Image])
+print(x)
+y <- data.frame(get(data)[Area])
+if (exists(R,where=1) == T){
+t <<- rbind(get(R) , gev.ig(N,cbind(x,y),Sample,Value))
+guiEval(remove(R,where=1), R, removal=T)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+if (exists(R,where=1) == F){
+t <<- gev.ig(N,cbind(x,y),Sample,Value)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$IEV",
+			Type="MenuItem",Action="Function",Command="IEV",
+			MenuItemText="&Invers GEV")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="IEVDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="IEVImage",
+		DialogPrompt="Image",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property",Name="IEVArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property",Name="IEVReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+guiCreate("Property", Name = "IEVName", DialogPrompt = "Sample name",
+		DefaultValue = "Extremes", type="Normal", DialogControl = "String", UseQuotes=T);
+
+guiCreate("Property", Name = "IEVValue", Type = "Normal",
+		DialogPrompt = "Value", DialogControl = "Float" );
+
+guiCreate("Property", Name = "IEVSample", Type = "Normal",
+		DefaultValue = "1", DialogPrompt = "Sampling ratio", DialogControl = "Float" );
+
+guiCreate("Property",Name="IEVResults",
+		DialogPrompt="Results",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="IEVDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("IEVDataFrame","IEVImage","IEVArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "IEV",Function = "IEV",
+		DialogHeader = "Inverse GEV Analisys",StatusString = "Working",
+		PropertyList = c("IEVDataGroup","IEVReturn","IEVName","IEVValue","IEVSample","IEVResults"),
+		ArgumentList = "#0=IEVReturn,#1=IEVDataFrame,
+				#2=IEVImage,#3=IEVArea,#4=IEVName,#5=IEVValue,#6=IEVSample,#7=IEVResults")
+				
+
+
+
+## Finestra immissione dati Ricerca soglia, creazione della funzione di restituzione dei valori.
+
+TF <- function(data,Area){
+y <- data.frame(get(data)[Area])
+mrl.plot(y[,1])
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$Threshold",
+			Type="MenuItem",Action="Function",Command="TF",
+			MenuItemText="&Threshold")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="TFDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="TFArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property",Name="TFReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="TFDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("TFDataFrame","TFArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "TF",Function = "TF",
+		DialogHeader = "Find the threshold",StatusString = "Working",
+		PropertyList = c("TFDataGroup","TFReturn"),
+		ArgumentList = "#0=TFReturn,#1=TFDataFrame,#2=TFArea")
+
+
+
+
+
+
+
+## Finestra immissione dati GPD, creazione della funzione di restituzione dei valori.
+
+GPD <- function(data,Area,Threshold,N,Prob,Sample,R,G){
+y <- data.frame(get(data)[Area])
+if (G==T)
+{if (exists(R,where=1) == T){
+t <<- rbind(get(R) , gpd.e(N,y[,1],Threshold,Prob,Sample))
+guiEval(remove(R,where=1), R, removal=T)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+if (exists(R,where=1) == F){
+t <<- gpd.e(N,y[,1],Threshold,Prob,Sample)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+}
+
+if (G==F)
+{if (exists(R,where=1) == T){
+t <<- rbind(get(R) , gpd.ev(N,y[,1],Threshold,Prob,Sample))
+guiEval(remove(R,where=1), R, removal=T)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+if (exists(R,where=1) == F){
+t <<- gpd.ev(N,y[,1],Threshold,Prob,Sample)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+}
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$GPD",
+			Type="MenuItem",Action="Function",Command="GPD",
+			MenuItemText="&GPD")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="GPDDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="GPDArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property", Name = "GPDThreshold", Type = "Normal",
+		DialogPrompt = "Threshold", DialogControl = "Float" );
+
+guiCreate("Property",Name="GPDReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+guiCreate("Property", Name = "GPDName", DialogPrompt = "Sample name",
+		DefaultValue = "Extremes", type="Normal", DialogControl = "String", UseQuotes=T);
+
+guiCreate("Property", Name = "GPDProb", Type = "Normal",
+		DefaultValue = "0.95", DialogPrompt = "Confidential level", DialogControl = "Float" );
+
+guiCreate("Property", Name = "GPDSample", Type = "Normal",
+		DefaultValue = "1", DialogPrompt = "Sampling ratio", DialogControl = "Float" );
+
+guiCreate("Property",Name="GPDResults",
+		DialogPrompt="Results",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property", Name = "GPDGraph", Type = "Normal",
+		DefaultValue = "T", DialogPrompt = "Graph", DialogControl ="Check Box");
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="GPDDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("GPDDataFrame","GPDArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "GPD",Function = "GPD",
+		DialogHeader = "GPD Analisys",StatusString = "Working",
+		PropertyList = c("GPDDataGroup","GPDThreshold","GPDReturn","GPDName","GPDProb","GPDSample","GPDResults","GPDGraph"),
+		ArgumentList = "#0=GPDReturn,#1=GPDDataFrame,
+				#2=GPDArea,#3=GPDThreshold,#4=GPDName,#5=GPDProb,#6=GPDSample,#7=GPDResults,#8=GPDGraph")
+		
+
+
+
+## Finestra immissione dati GEV, creazione della funzione di restituzione dei valori.
+
+GEV <- function(data,Image,Area,N,Prob,Sample,R){
+x <- data.frame(get(data)[Image])
+print(x)
+y <- data.frame(get(data)[Area])
+if (exists(R,where=1) == T){
+t <<- rbind(get(R) , gev.eg(N,cbind(x,y),Prob,Sample))
+guiEval(remove(R,where=1), R, removal=T)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+if (exists(R,where=1) == F){
+t <<- gev.eg(N,cbind(x,y),Prob,Sample)
+guiModify( "data.frame", Name = "t",
+	NewName = R)}
+
+}
+
+## Creazione dei men
+guiCreate("MenuItem", Name = "SPlusMenuBar$Extreme",Type="Menu",
+			MenuItemText = "&Extreme",Index=16,OverWrite=F)
+
+guiCreate("MenuItem",Name = "SPlusMenuBar$Extreme$GEV",
+			Type="MenuItem",Action="Function",Command="GEV",
+			MenuItemText="&GEV")
+
+## Creazione degli elementi della maschera
+
+guiCreate("Property",Name="GEVDataFrame",
+		DialogPrompt="DataFrame",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+guiCreate("Property",Name="GEVImage",
+		DialogPrompt="Image",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property",Name="GEVArea",	
+		DialogPrompt="Area",UseQuotes=T,IsList=F,
+		CopyFrom="TXPROP_DataFrameColumnsND");
+
+guiCreate("Property",Name="GEVReturn",DialogControl="Invisible",
+		DialogPrompt="Return Value");
+
+guiCreate("Property", Name = "GEVName", DialogPrompt = "Sample name",
+		DefaultValue = "Extremes", type="Normal", DialogControl = "String", UseQuotes=T);
+
+guiCreate("Property", Name = "GEVProb", Type = "Normal",
+		DefaultValue = "0.95", DialogPrompt = "Confidential level", DialogControl = "Float" );
+
+guiCreate("Property", Name = "GEVSample", Type = "Normal",
+		DefaultValue = "1", DialogPrompt = "Sampling ratio", DialogControl = "Float" );
+
+guiCreate("Property",Name="GEVResults",
+		DialogPrompt="Results",UseQuotes=T,
+		CopyFrom="TXPROP_DataFrames");
+
+
+## Creazione dell'aggregato di dataframe e colonne selezionate
+
+guiCreate("Property",Name="GEVDataGroup",type="Group",DialogPrompt="Data",
+		PropertyList = c("GEVDataFrame","GEVImage","GEVArea"));
+
+## Creazione della funzione
+
+guiCreate("FunctionInfo",Name = "GEV",Function = "GEV",
+		DialogHeader = "GEV Analisys",StatusString = "Working",
+		PropertyList = c("GEVDataGroup","GEVReturn","GEVName","GEVProb","GEVSample","GEVResults"),
+		ArgumentList = "#0=GEVReturn,#1=GEVDataFrame,
+				#2=GEVImage,#3=GEVArea,#4=GEVName,#5=GEVProb,#6=GEVSample,#7=GEVResults")
+				
+
+
+"wm" <-
+function(n,x)
+{
+# n �il nome
+# x �la serie dei dati
+
+mu <- NA
+sigma <- NA
+epsilon <- NA
+
+mu.error <- NA
+sigma.error <- NA
+epsilon.error <- NA
+
+
+maxx <- max(x)
+p <- NA
+RightEnd <- NA
+extimed.max <- NA
+error.extime <- NA
+ca <- NA
+
+mode<-"WM"
+converge <- NA
+likelihood <- NA
+number.samples <- length(x)
+threshold <- NA
+number.extremes <- NA
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"gev.ig" <-
+function(n,x,ca,v)
+{
+# n �il nome
+# x �la serie dei dati
+# c �il numero di campioni
+# v �il valore per cui stiamre la probabilit�di superamento
+
+massimi <- aggregate(x, by=x[,1], FUN =max)
+temp <- gev.fit(massimi[,3])
+gev.diag(temp)
+
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+maxx <- max(massimi[,3])
+p <- (exp(-((1+epsilon*(v-mu)/sigma)^(-1/epsilon))))^(1/ca)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+extimed.max <- v
+error.extime <- NA
+
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(massimi[,3])
+threshold <- NA
+number.extremes <- NA
+pmeanr <- pmean.rad(x[,2])
+enought.radius <- max(sqrt(x[,2]/pi))/2 > min (sqrt(x[,2]/pi))
+pmeana <- pmean.ar(x[,2])
+enought.area <- max(x[,2])/2 > min (x[,2])
+
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gev.eg"<-
+function(n,x,p,ca)
+{
+# n �il nome
+# x �la serie dei dati
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+
+massimi <- aggregate(x, by=x[,1], FUN =max)
+temp <- gev.fit(massimi[,3])
+gev.diag(temp)
+mu <- 0
+sigma <- 0
+epsilon <- 0
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+maxx <- max(massimi[,3])
+extimed.max <- mu-sigma/epsilon*(1-(-log(p^(ca)))^-epsilon)
+error.extime <- mu.error-sigma.error/epsilon.error*(1-(-log(p^(ca)))^-epsilon.error)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(massimi[,3])
+threshold <- NA
+number.extremes <- NA
+pmeanr <- pmean.rad(x[,2])
+enought.radius <- max(sqrt(x[,2]/pi))/2 > min (sqrt(x[,2]/pi))
+pmeana <- pmean.ar(x[,2])
+enought.area <- max(x[,2])/2 > min (x[,2])
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gpd.i" <-
+function(n,x,t,ca,v)
+{
+# n �il nome
+# x �la serie dei dati
+# t �la soglia
+# ca �il numero di campioni
+# v �il valore per cui stimare il superamento
+
+temp <- gpd.fit(x,t)
+gpd.diag(temp)
+
+mu <- NA
+sigma <- temp$mle[1]
+epsilon <- temp$mle[2]
+
+mu.error <- NA
+sigma.error <- temp$se[1]
+epsilon.error <- temp$se[2]
+
+threshold <- temp$threshold
+maxx <- max(x)
+p <- (1-(1+epsilon*(v-threshold)/sigma)^(-1/epsilon))^(1/ca)
+RightEnd <- sigma*(1/(1-1)^(epsilon/1))/epsilon+(epsilon*threshold-sigma)/epsilon
+
+error.extime <- NA
+extimed.max <- v
+mode<-"GDP"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+number.extremes <- temp$nexc
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gev.i" <-
+function(n,x,ca,v)
+{
+# n �il nome
+# x �la serie dei dati
+# ca �il numero di campioni
+# v �il valore per cui stiamre la probabilit�di superamento
+
+temp <- gev.fit(x)
+gev.diag(temp)
+
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+
+maxx <- max(x)
+p <- (exp(-((1+epsilon*(v-mu)/sigma)^(-1/epsilon))))^(1/ca)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+error.extime <- NA
+extimed.max <- v
+
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+threshold <- NA
+number.extremes <- NA
+pmeanr <- NA
+enought.radius <- NA
+pmeana <- NA
+enought.area <- NA
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"gpd.ev" <-
+function(n,x,t,p,ca)
+{
+# n �il nome della serie
+# x �la serie dei dati
+# t �la soglia
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+temp <- gpd.fit(x,t)
+
+mu <- NA
+sigma <- temp$mle[1]
+epsilon <- temp$mle[2]
+
+mu.error <- NA
+sigma.error <- temp$se[1]
+epsilon.error <- temp$se[2]
+
+threshold <- temp$threshold
+maxx <- max(x)
+extimed.max <- sigma*(1/(1-p)^(epsilon/ca))/epsilon+(epsilon*threshold-sigma)/epsilon
+error.extime <- sigma.error*(1/(1-p)^(epsilon.error/ca))/epsilon.error+(epsilon.error-sigma.error)/epsilon.error
+RightEnd <- sigma*(1/(1-1)^(epsilon/1))/epsilon+(epsilon*threshold-sigma)/epsilon
+mode<-"GDP"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+number.extremes <- temp$nexc
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"gpd.e" <-
+function(n,x,t,p,ca)
+{
+# n �il nome della serie
+# x �la serie dei dati
+# t �la soglia
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+temp <- gpd.fit(x,t)
+gpd.diag(temp)
+
+mu <- NA
+sigma <- temp$mle[1]
+epsilon <- temp$mle[2]
+
+mu.error <- NA
+sigma.error <- temp$se[1]
+epsilon.error <- temp$se[2]
+
+threshold <- temp$threshold
+maxx <- max(x)
+extimed.max <- sigma*(1/(1-p)^(epsilon/ca))/epsilon+(epsilon*threshold-sigma)/epsilon
+error.extime <- sigma.error*(1/(1-p)^(epsilon.error/ca))/epsilon.error+(epsilon.error-sigma.error)/epsilon.error
+RightEnd <- sigma*(1/(1-1)^(epsilon/1))/epsilon+(epsilon*threshold-sigma)/epsilon
+mode<-"GDP"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+number.extremes <- temp$nexc
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gev.e"<-
+function(n,x,p,ca)
+{
+# n �il nome
+# x �la serie dei dati
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+
+temp <- gev.fit(x)
+gev.diag(temp)
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+maxx <- max(x)
+extimed.max <- mu-sigma/epsilon*(1-(-log(p^(ca)))^-epsilon)
+error.extime <- mu.error-sigma.error/epsilon.error*(1-(-log(p^(ca)))^-epsilon.error)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+threshold <- NA
+number.extremes <- NA
+pmeanr <- NA
+enought.radius <- NA
+pmeana <- NA
+enought.area <- NA
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"pmean.rad" <- function(A)
+{
+# Met�dell massimo del raggio
+# A �la serie delle aree
+temp <- sqrt(A/pi)
+temp1 <- 9999
+for (i in 1:length(temp))
+		{if (temp[i] > max(temp)/2) (temp1 <- rbind(temp1, temp[i]))}
+temp1 <- remove.row(target = temp1, start.row = 1, count = 1)
+result <- (sum(temp1^5)/sum(temp1^4))^2*pi
+}
+
+"pmean.ar" <- function(A)
+{
+# Met�dell massimo del raggio
+# A �la serie delle aree
+temp <- sqrt(A/pi)
+temp1 <- 9999
+for (i in 1:length(temp))
+		{if (A[i] > max(A)/2) (temp1 <- rbind(temp1, temp[i]))}
+temp1 <- remove.row(target = temp1, start.row = 1, count = 1)
+result <- (sum(temp1^5)/sum(temp1^4))^2*pi
+}
+
+"gev.dens"<-
+function(a, z)
+{
+#
+# evaluates gev density with parameters a at z
+#
+	if(a[3] != 0) (exp( - (1 + (a[3] * (z - a[1]))/a[2])^(-1/a[3])) * (1 + (
+			a[3] * (z - a[1]))/a[2])^(-1/a[3] - 1))/a[2] else {
+		gum.dens(c(a[1], a[2]), z)
+	}
+}
+"gev.diag"<-
+function(z)
+{
+#
+# produces diagnostic plots for output of
+# gev.fit stored in z
+#
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	{
+		if(z$trans) {
+			par(mfrow = c(1, 2))
+			plot(x, exp( - exp( - sort(z$data))), xlab = 
+				"Empirical", ylab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Probability Plot")
+			plot( - log( - log(x)), sort(z$data), ylab = 
+				"Empirical", xlab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Quantile Plot (Gumbel Scale)")
+		}
+		else {
+			par(mfrow = c(2, 2))
+			gev.pp(z$mle, z$data)
+			gev.qq(z$mle, z$data)
+			gev.rl(z$mle, z$cov, z$data)
+			gev.his(z$mle, z$data)
+		}
+		par(mfrow = c(1, 1))
+		invisible()
+	}
+}
+"gev.fit"<-
+function(xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL, mulink = 
+	identity, siglink = identity, shlink = identity)
+{
+#
+# obtains mles etc for gev distn
+#
+	z <- list()
+	z$trans <- F	# if maximization fails, could try
+# changing in1 and in2 which are 
+# initial values for minimization routine
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, length(xdat)))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, length(xdat)), ydat[, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdat)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdat)), ydat[, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, length(xdat)))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, length(xdat)), ydat[, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	z$model <- list(mul, sigl, shl)
+	z$link <- deparse(substitute(c(mulink, siglink, shlink)))
+	init <- c(muinit, siginit, shinit)
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	x <- nlmin(gev.lik, init, max.fcal = 200, max.iter = 150, print = 0)
+	z$conv <- x$converged
+	if(z$conv) {
+		z$nllh <- gev.lik(x$x)
+		h <- hess(gev.lik, x$x)
+		z$data <- xdat
+		z$trans
+		if(z$trans) {
+			z$data <-  - log(as.vector((1 + (xi * (xdat - mu))/sc)^(
+				-1/xi)))
+		}
+		z$mle <- x$x
+		z$se <- sqrt(diag(h))
+		z$cov <- h
+		z$vals <- cbind(mu, sc, xi)
+	}
+	if(z$trans)
+		print(z[c(2, 3, 4)])
+	else print(z[4])
+	if(z$conv) {
+		print(z[c(5, 7, 8)])
+	}
+	invisible(z)
+}
+"gev.his"<-
+function(a, dat)
+{
+#
+# Plots histogram of data and fitted density
+# for output of gev.fit stored in z
+#
+	h <- hist(dat, prob = T, plot = F)
+	if(a[3] < 0) {
+		x <- seq(min(h$breaks), min(max(h$breaks), (a[1] - a[2]/a[3] - 
+			0.001)), length = 100)
+	}
+	else {
+		x <- seq(max(min(h$breaks), (a[1] - a[2]/a[3] + 0.001)), max(h$
+			breaks), length = 100)
+	}
+	y <- gev.dens(a, x)
+	hist(dat, prob = T, ylim = c(0, max(y)), xlab = "z", ylab = "f(z)", 
+		main = "Density Plot")
+	points(dat, rep(0, length(dat)))
+	lines(x, y)
+}
+"gev.lik"<-
+function(a)
+{
+#
+# support routine for gev.fit
+# computes neg log lik of gev model
+#
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
+	assign("mu", mu, frame = 1)
+	assign("sc", sc, frame = 1)
+	assign("xi", xi, frame = 1)
+	y <- (xdat - mu)/sc
+	y <- 1 + xi * y
+	if(min(y) <= 0)
+		l <- 10^6
+	else l <- sum(log(sc)) + sum(y^(-1/xi)) + sum(log(y) * (1/xi + 1))
+	l
+}
+"gev.plik"<-
+function(a)
+{
+#
+# support routine for gev.prof
+# computes profile neg log lik
+#
+	if(p != 0) mu <- xp - a[1]/a[2] * (( - log(1 - p))^( - a[2]) - 1) else 
+			mu <- xp + a[1]/a[2]
+	if(abs(a[2]) < 10^(-6))
+		l <- gum.lik(c(a[1], mu))
+	else {
+		y <- (xdat - mu)/a[1]
+		y <- 1 + a[2] * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(a[1]) + sum(y^(-1/a[2])) + sum(log(
+				y)) * (1/a[2] + 1)
+	}
+	l
+}
+"gev.plikxi"<-
+function(a)
+{
+#
+# support routine for gev.profxi
+# computes profile neg lok lik
+#
+	if(abs(xi) < 10^(-4)) l <- gum.lik(c(a[1], a[2])) else {
+		y <- (xdat - a[1])/a[2]
+		y <- 1 + xi * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(a[2]) + sum(y^(-1/xi)) + sum(log(y
+				)) * (1/xi + 1)
+	}
+	l
+}
+"gev.pp"<-
+function(a, dat)
+{
+#
+# sub-function for gev.diag
+# produces probability plot
+#
+	plot((1:length(dat))/length(dat), gevf(a, sort(dat)), xlab = 
+		"Empirical", ylab = "Model", main = "Probability Plot")
+	abline(0, 1, col = 4)
+}
+"gev.prof"<-
+function(z, m, xlow, xup, conf = 0.95, nint = 100)
+{
+#
+# plots profile log likelihood for m 'year' return level
+# in gev model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	p <- 1/m
+	v <- NULL
+	x <- seq(xlow, xup, length = nint)
+	sol <- c(z$mle[2], z$mle[3])
+	for(i in 1:(length(x))) {
+		assign("xp", x[i], frame = 1)
+		assign("p", p, frame = 1)
+		sol <- nlmin(gev.plik, sol, print = 0)$x
+		v[i] <- gev.plik(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Return Level", ylab = 
+		" Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma, col = 4)
+	abline(h = ma - 0.5 * qchisq(conf, 1), col = 4)
+	invisible()
+}
+"gev.profxi"<-
+function(z, xlow, xup, conf = 0.95, nint = 100)
+{
+#
+# plots profile log-likelihood for shape parameter
+# in gev model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	v <- NULL
+	x <- seq(xup, xlow, length = nint)
+	sol <- c(z$mle[1], z$mle[2])
+	for(i in 1:(length(x))) {
+		assign("xi", x[i], frame = 1)
+		sol <- nlmin(gev.plikxi, sol, print = 0)$x
+		v[i] <- gev.plikxi(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Shape Parameter", ylab = 
+		"Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma, col = 4)
+	abline(h = ma - 0.5 * qchisq(conf, 1), col = 4)
+	invisible()
+}
+"gev.qq"<-
+function(a, dat)
+{
+#
+# function called by gev.diag
+# produces quantile plot
+#
+	plot(gevq(a, 1 - (1:length(dat)/(length(dat) + 1))), sort(dat), ylab = 
+		"Empirical", xlab = "Model", main = "Quantile Plot")
+	abline(0, 1, col = 4)
+}
+"gev.rl"<-
+function(a, mat, dat)
+{
+#
+# function called by gev.diag
+# produces return level curve and 95 % confidence intervals
+# on usual scale
+#
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a3 <- a
+	a1[1] <- a[1] + eps
+	a2[2] <- a[2] + eps
+	a3[3] <- a[3] + eps
+	f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 
+		0.8, 0.9, 0.95, 0.99, 0.995, 0.999)
+	q <- gevq(a, 1 - f)
+	d1 <- (gevq(a1, 1 - f) - q)/eps
+	d2 <- (gevq(a2, 1 - f) - q)/eps
+	d3 <- (gevq(a3, 1 - f) - q)/eps
+	d <- cbind(d1, d2, d3)
+	v <- apply(d, 1, q.form, m = mat)
+	plot((f), q, "x", type = "n", xlim = c(0.01, 1), ylim = c(
+		min(dat, q), max(dat, q)), xlab = "Probability", ylab = 
+		"Return Level")
+	title("Probability Plot")
+	lines((f), q)
+	lines((f), q + 1.96 * sqrt(v), col = 4)
+	lines((f), q - 1.96 * sqrt(v), col = 4)
+	points(((1:length(dat))/(length(dat) + 1)), sort(dat))
+}
+"gevf"<-
+function(a, z)
+{
+#
+# ancillary function calculates gev dist fnc
+#
+	if(a[3] != 0) exp( - (1 + (a[3] * (z - a[1]))/a[2])^(-1/a[3])) else 
+			gum.df(z, a[1], a[2])
+}
+"gevq"<-
+function(a, p)
+{
+	if(a[3] != 0)
+		a[1] + (a[2] * (( - log(1 - p))^( - a[3]) - 1))/a[3]
+	else gum.q(p, a[1], a[2])
+}
+"gpd.dens"<-
+function(a, u, z)
+{
+#
+# ancillary function computes gpd density
+#
+	(1 + (a[2] * (z - u))/a[1])^(-1/a[2] - 1)/a[1]
+}
+"gpd.diag"<-
+function(z)
+{
+#
+# produces diagnostic plots for gpd model
+# estimated using gpd.fit with output stored in z
+#
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	{
+		if(z$trans) {
+			par(mfrow = c(1, 2))
+			plot(x, 1 - exp( - sort(z$data)), xlab = "Empirical", 
+				ylab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Probability Plot")
+			plot( - log(1 - x), sort(z$data), ylab = "Empirical", 
+				xlab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Quantile Plot (Exptl. Scale)")
+		}
+		else {
+			par(mfrow = c(2, 2))
+			gpd.pp(z$mle, z$threshold, z$data)
+			gpd.qq(z$mle, z$threshold, z$data)
+			gpd.rl(z$mle, z$threshold, z$rate, z$n, z$npy, z$cov, z$
+				data, z$xdata)
+			gpd.his(z$mle, z$threshold, z$data)
+		}
+		invisible()
+	}
+	par(mfrow = c(1, 1))
+}
+"gpd.fit"<-
+function(xdat, ufun, npy = 365, ydat = NULL, sigl = NULL, shl = NULL, siglink
+	 = identity, shlink = identity)
+{
+# 
+# obtains mles etc for gpd model
+#
+	z <- list()
+	z$trans <- F
+	if(is.function(ufun)) {
+		z$trans <- T
+		u <- ufun(1:length(xdat))
+	}
+	else {
+		if(length(ufun) == length(xdat)) {
+			u <- ufun
+		}
+		else u <- rep(ufun, length(xdat))
+	}
+	xdatu <- xdat[xdat > u]
+	xind <- (1:length(xdat))[xdat > u]
+	u <- u[xind]	#
+# if routine fails try changing initialization values
+# of in1 and in2
+#
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat, na.rm = T) - 0.57722 * in2
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdatu)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdatu)), ydat[xind, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, length(xdatu)))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, length(xdatu)), ydat[xind, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	init <- c(siginit, shinit)
+	npsc <- length(sigl) + 1
+	npsh <- length(shl) + 1
+	assign("xdat", xdat, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	assign("xdatu", xdatu, frame = 1)
+	assign("xind", xind, frame = 1)
+	assign("u", u, frame = 1)
+	assign("n", length(xdat), frame = 1)
+	assign("npy", npy, frame = 1)
+	z$model <- list(sigl, shl)
+	z$link <- deparse(substitute(c(siglink, shlink)))
+	if(is.function(ufun))
+		z$threshold <- deparse(substitute(ufun))
+	else z$threshold <- ufun
+	z$nexc <- length(xdatu)
+	z$data <- xdatu	#	cat(gpd.lik(init), fill = T)
+	x <- nlmin(gpd.lik, init, max.fcal = 1000, max.iter = 950, print = 0, d
+		 = c(rep(1/var(xdat), npsc), rep(1, npsh)))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (x$x[seq(1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (x$x[seq(npsc + 1, length = npsh)]))
+	z$conv <- x$converged
+	z$nllh <- gpd.lik(x$x)
+	h <- hess(gpd.lik, x$x)
+	z$vals <- cbind(sc, xi, u)
+	if(z$trans) {
+		z$data <-  - log(as.vector((1 + (xi * (xdatu - u))/sc)^(-1/xi))
+			)
+	}
+	z$mle <- x$x
+	z$rate <- length(xdatu)/length(xdat)
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	z$n <- n
+	z$npy <- npy
+	z$xdata <- xdat
+	if(z$trans)
+		print(z[c(2, 3)])
+	if(length(z[[4]]) == 1)
+		print(z[4])
+	print(z[c(5, 7)])
+	if(z$conv)
+		print(z[c(8, 10, 11, 12)])
+	invisible(z)
+}
+"gpd.fitrange"<-
+function(data, umin, umax, nint = 10)
+{
+#
+# computes mle's in gpd model, adjusted for threshold, 
+# over range of threshold choices.
+#
+	m <- matrix(0, nrow = nint, ncol = 2)
+	s <- matrix(0, nrow = nint, ncol = 2)
+	up <- matrix(0, nrow = nint, ncol = 2)
+	ul <- matrix(0, nrow = nint, ncol = 2)
+	u <- seq(umin, umax, length = nint)
+	for(i in 1:nint) {
+		z <- gpd.fit(data, u[i])
+		m[i,  ] <- z$mle
+		m[i, 1] <- m[i, 1] - m[i, 2] * u[i]
+		d <- matrix(c(1,  - u[i]), ncol = 1)
+		v <- t(d) %*% z$cov %*% d
+		s[i,  ] <- z$se
+		s[i, 1] <- sqrt(v)
+		up[i,  ] <- m[i,  ] + 1.96 * s[i,  ]
+		ul[i,  ] <- m[i,  ] - 1.96 * s[i,  ]
+	}
+	names <- c("Modified Scale", "Shape")
+	par(mfrow = c(2, 1))
+	for(i in 1:2) {
+		um <- max(up[, i])
+		ud <- min(ul[, i])
+		plot(u, m[, i], ylim = c(ud, um), xlab = "Threshold", ylab = 
+			names[i], type = "b")
+		for(j in 1:nint)
+			lines(c(u[j], u[j]), c(ul[j, i], up[j, i]))
+	}
+}
+"gpd.his"<-
+function(a, u, dat)
+{
+#
+# function called by gpd.diag
+# produces histogram and density plot
+#
+	h <- hist(dat, prob = T, plot = F)
+	x <- seq(u, max(h$breaks), length = 100)
+	y <- gpd.dens(a, u, x)
+	hist(dat, prob = T, ylim = c(0, max(y)), xlab = "x", ylab = "f(x)", 
+		main = "Density Plot")
+	lines(x, y, col = 4)
+}
+"gpd.lik"<-
+function(a)
+{
+#
+# ancillary function for gpd.fit
+# calculates gpd neg log lik
+#
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npsc + 1, length = npsh)]))
+	y <- (xdatu - u)/sc
+	y <- 1 + xi * y
+	if(min(sc) <= 0)
+		l <- 10^6
+	else {
+		if(min(y) <= 0)
+			l <- 10^6
+		else {
+			l <- sum(log(sc)) + sum(log(y) * (1/xi + 1))
+		}
+	}
+	l
+}
+"gpd.plik"<-
+function(a)
+{
+#
+# ancillary function for gpd.prof
+# calculates profile neg log lik
+#
+	if(m != Inf) sc <- (a * (xp - u))/((m * la)^a - 1) else sc <- (u - xp)/
+			a
+	if(abs(a) < 10^(-4))
+		l <- length(xdat) * log(sc) + sum(xdat - u)/sc
+	else {
+		y <- (xdat - u)/sc
+		y <- 1 + a * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(sc) + sum(log(y)) * (1/a + 1)
+	}
+	l
+}
+"gpd.plikxi"<-
+function(a)
+{
+#
+# ancillary function for gpd.profxi
+# calculates profile log lik
+#
+	if(abs(xi) < 10^(-4)) l <- length(xdat) * log(a) + sum(xdat - u)/a
+		 else {
+		y <- (xdat - u)/a
+		y <- 1 + xi * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(a) + sum(log(y)) * (1/xi + 1)
+	}
+	l
+}
+"gpd.pp"<-
+function(a, u, dat)
+{
+# 
+# function called by gpd.diag
+# produces probability plot for gpd model
+#
+	plot((1:length(dat))/length(dat), gpdf(a, u, sort(dat)), xlab = 
+		"Empirical", ylab = "Model", main = "Probability Plot")
+	abline(0, 1, col = 4)
+}
+"gpd.prof"<-
+function(z, m, xlow, xup, npy = 365, conf = 0.95, nint = 100)
+{
+#
+# plots profile log-likelihood for m-year return level
+# in gpd model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	assign("u", z$threshold, frame = 1)
+	assign("la", z$rate, frame = 1)
+	v <- NULL
+	x <- seq(xlow, xup, length = nint)
+	sol <- z$mle[2]
+	for(i in 1:(length(x))) {
+		assign("xp", x[i], frame = 1)
+		assign("m", m * npy, frame = 1)
+		sol <- nlmin(gpd.plik, sol, print = 0)$x
+		v[i] <- gpd.plik(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Return Level", ylab = 
+		"Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma)
+	abline(h = ma - 0.5 * qchisq(conf, 1))
+	invisible()
+}
+"gpd.profxi"<-
+function(z, xlow, xup, conf = 0.95, nint = 100)
+{
+#
+# plots profile log likelihood for shape parameter
+# in gpd model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	assign("u", z$threshold, frame = 1)
+	v <- NULL
+	x <- seq(xup, xlow, length = nint)
+	sol <- z$mle[1]
+	for(i in 1:(length(x))) {
+		assign("xi", x[i], frame = 1)
+		sol <- nlmin(gpd.plikxi, sol, print = 0)$x
+		v[i] <- gpd.plikxi(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Shape Parameter", ylab = 
+		"Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma, lty = 1)
+	abline(h = ma - 0.5 * qchisq(conf, 1), lty = 1)
+	invisible()
+}
+"gpd.qq"<-
+function(a, u, dat)
+{
+#
+# function called by gpd.diag
+# produces quantile plot for gpd model
+#
+	plot(gpdq(a, u, 1 - (1:length(dat)/(length(dat) + 1))), sort(dat), ylab
+		 = "Empirical", xlab = "Model", main = "Quantile Plot")
+	abline(0, 1, col = 4)
+}
+"gpd.rl"<-
+function(a, u, la, n, npy, mat, dat, xdat)
+{
+#
+# function called by gpd.diag
+# produces return level curve and 95% confidence intervals
+# for fitted gpd model
+	a <- c(la, a)
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a3 <- a
+	a1[1] <- a[1] + eps
+	a2[2] <- a[2] + eps
+	a3[3] <- a[3] + eps
+	jj <- seq(-1, 3.75 + log10(npy), by = 0.1)
+	m <- c(1/la, 10^jj)
+	q <- gpdq2(a[2:3], u, la, m)
+	d1 <- (gpdq2(a1[2:3], u, la, m) - q)/eps
+	d2 <- (gpdq2(a2[2:3], u, la, m) - q)/eps
+	d3 <- (gpdq2(a3[2:3], u, la, m) - q)/eps
+	d <- cbind(d1, d2, d3)
+	mat <- matrix(c((la * (1 - la))/n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, 
+		mat[2, 1], mat[2, 2]), nc = 3)
+	v <- apply(d, 1, q.form, m = mat)
+	plot(1/(m/npy), q, "x", type = "n", xlim = c(0.1, 1), ylim
+		 = c(u, max(xdat, q[q > u - 1] + 1.96 * sqrt(v)[q > u - 1])), 
+		xlab = "Probability", ylab = "Return level", main = 
+		"Probability Plot")
+	lines((m[q > u - 1]/npy), q[q > u - 1])
+	lines((m[q > u - 1]/npy), q[q > u - 1] + 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	lines((m[q > u - 1]/npy), q[q > u - 1] - 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	nl <- n - length(dat) + 1
+	sdat <- sort(xdat)
+	points((1/(1 - (1:n)/(n + 1))/npy)[sdat > u], sdat[sdat > u])	
+	#	points(1/(1 - (1:n)/(n + 1))/npy, 
+#		sort(xdat))
+#	abline(h = u, col = 3)
+}
+"gpdf"<-
+function(a, u, z)
+{
+#
+# ancillary function
+# calculates gpd distribution function
+#
+	1 - (1 + (a[2] * (z - u))/a[1])^(-1/a[2])
+}
+"gpdq"<-
+function(a, u, p)
+u + (a[1] * (p^( - a[2])	#
+# ancillary function
+# computes gpd quantiles
+#
+ - 1))/a[2]
+"gpdq2"<-
+function(a, u, la, m)
+{
+#
+# ancillary function
+# calculates quantiles of gpd model
+#
+	u + (a[1] * ((m * la)^(a[2]) - 1))/a[2]
+}
+"gum.dens"<-
+function(a, x)
+{
+#
+# ancillary function calculates density for gumbel model
+#
+	y <- (x - a[1])/a[2]
+	(exp( - y) * exp( - exp( - y)))/a[2]
+}
+"gum.df"<-
+function(x, a, b)
+{
+#
+# ancillary function calculates dist fnc of gumbel model
+#
+	exp( - exp( - (x - a)/b))
+}
+"gum.diag"<-
+function(z)
+{
+#
+# produces diagnostic plots for output of
+# gum.fit stored in z
+#
+	z$mle <- c(z$mle, 0)
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	{
+		if(z$trans) {
+			par(mfrow = c(1, 2))
+			plot(x, exp( - exp( - sort(z$data))), xlab = 
+				"empirical", ylab = "model")
+			abline(0, 1, col = 4)
+			title("Residual Probability Plot")
+			plot( - log( - log(x)), sort(z$data), xlab = 
+				"empirical", ylab = "model")
+			abline(0, 1, col = 4)
+			title("Residual Quantile Plot (Gumbel Scale)")
+		}
+		else {
+			par(mfrow = c(2, 2))
+			gev.pp(z$mle, z$data)
+			gev.qq(z$mle, z$data)
+			gum.rl(z$mle, z$cov, z$data)
+			gev.his(z$mle, z$data)
+		}
+		par(mfrow = c(1, 1))
+		invisible()
+	}
+}
+"gum.fit"<-
+function(xdat, ydat = NULL, mul = NULL, sigl = NULL, mulink = identity, siglink
+	 = identity)
+{
+#
+# finds mles etc for gumbel model
+#
+	z <- list()
+	z$trans <- F
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, length(xdat)))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, length(xdat)), ydat[, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdat)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdat)), ydat[, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	z$model <- list(mul, sigl)
+	z$link <- c(deparse(substitute(mulink)), deparse(substitute(siglink)))
+	init <- c(muinit, siginit)
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	x <- nlmin(gum.lik, init, max.fcal = 200, max.iter = 150, print = 0)
+	z$conv <- x$converged
+	z$nllh <- gum.lik(x$x)
+	h <- hess(gum.lik, x$x)
+	z$data <- xdat
+	z$trans
+	if(z$trans) {
+		z$data <- as.vector((xdat - mu)/sc)
+	}
+	z$mle <- x$x
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	z$vals <- cbind(mu, sc)
+	if(z$trans)
+		print(z[c(2, 3, 4)])
+	else print(z[4])
+	if(z$conv)
+		print(z[c(5, 7, 8)])
+	invisible(z)
+}
+"gum.lik"<-
+function(a)
+{
+#
+# ancillary routine or gum.fit
+# calculates neg log lik of gumbel model
+#
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	assign("mu", mu, frame = 1)
+	assign("sc", sc, frame = 1)
+	y <- (xdat - mu)/sc
+	l <- sum(log(sc)) + sum(y) + sum(exp( - y))
+	l
+}
+"gum.q"<-
+function(x, a, b)
+{
+#
+# ancillary routine
+# calculates quantiles of gumbel distn
+#
+	a - b * log( - log(1 - x))
+}
+"gum.rl"<-
+function(a, mat, dat)
+{
+#
+# function called by gum.diag
+# produces return level curve and 95 % confidence intervals
+# on usual scale for gumbel model
+#
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a1[1] <- a[1] + eps
+	a2[2] <- a[2] + eps
+	f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 
+		0.8, 0.9, 0.95, 0.99, 0.995, 0.999)
+	q <- gevq(a, 1 - f)
+	d1 <- (gevq(a1, 1 - f) - q)/eps
+	d2 <- (gevq(a2, 1 - f) - q)/eps
+	d <- cbind(d1, d2)
+	v <- apply(d, 1, q.form, m = mat)
+	plot(-1/log(f), q, log = "x", type = "n", xlim = c(0.1, 1000), ylim = c(
+		min(dat, q), max(dat, q)), xlab = "Return Period", ylab = 
+		"Return Level")
+	title("Return Level Plot")
+	lines(-1/log(f), q)
+	lines(-1/log(f), q + 1.96 * sqrt(v), col = 4)
+	lines(-1/log(f), q - 1.96 * sqrt(v), col = 4)
+	points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
+}
+"hess"<-
+function(f, x, ep = 10^-4)
+{
+	eps <- ep * x
+	n <- length(x)
+	m <- matrix(0, ncol = n, nrow = n)
+	for(i in 1:n) {
+		for(j in 1:n) {
+			x1 <- x
+			x1[i] <- x1[i] + eps[i]
+			x1[j] <- x1[j] + eps[j]
+			x2 <- x
+			x2[i] <- x2[i] + eps[i]
+			x2[j] <- x2[j] - eps[j]
+			x3 <- x
+			x3[i] <- x3[i] - eps[i]
+			x3[j] <- x3[j] + eps[j]
+			x4 <- x
+			x4[i] <- x4[i] - eps[i]
+			x4[j] <- x4[j] - eps[j]
+			m[i, j] <- (f(x1) - f(x2) - f(x3) + f(x4))/(4 * eps[i] * 
+				eps[j])
+		}
+	}
+	solve(m)
+}
+"identity"<-
+function(x)
+x
+"mrl.plot"<-
+function(data, umin = min(data), umax = max(data) - 0.1, conf = 0.95, nint = 
+	100)
+{
+#
+# function to produce empirical mean residual life plot
+# as function of threshold.
+# confidence intervals included as well.
+#
+	x <- NULL
+	xu <- NULL
+	xl <- NULL
+	u <- seq(umin, umax, length = nint)
+	for(i in 1:nint) {
+		data <- data[data > u[i]]
+		x[i] <- mean(data - u[i])
+		sdev <- sqrt(var(data))
+		n <- length(data)
+		xu[i] <- x[i] + (qnorm((1 + conf)/2) * sdev)/sqrt(n)
+		xl[i] <- x[i] - (qnorm((1 + conf)/2) * sdev)/sqrt(n)
+	}
+	plot(u, x, type = "l", xlab = "u", ylab = "Mean Excess", ylim = c(min(
+		xl[!is.na(xl)]), max(xu[!is.na(xu)])))
+	lines(u[!is.na(xl)], xl[!is.na(xl)], lty = 2)
+	lines(u[!is.na(xu)], xu[!is.na(xu)], lty = 2)
+}
+"pp.diag"<-
+function(z)
+{
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	if(z$trans) {
+		par(mfrow = c(1, 2))
+		plot(x, sort(z$data), xlab = "empirical", ylab = "model")
+		abline(0, 1, col = 3)
+		title("Residual Probability Plot")
+		plot( - log(1 - x),  - log(1 - sort(z$data)), ylab = 
+			"empirical", xlab = "model")
+		abline(0, 1, col = 3)
+		title("Residual quantile Plot (Exptl. Scale)")
+	}
+	else {
+		par(mfrow = c(1, 2), pty = "s")
+		pp.pp(z$mle, z$threshold, z$npy, z$data)
+		pp.qq(z$mle, z$threshold, z$npy, z$data)
+	}
+	par(mfrow = c(1, 1))
+	invisible()
+}
+"pp.fit"<-
+function(xdat, ufun, npy = 365, ydat = NULL, mul = NULL, sigl = NULL, shl = 
+	NULL, mulink = identity, siglink = identity, shlink = identity)
+{
+	z <- list()
+	z$trans <- F
+	if(is.function(ufun)) {
+		z$trans <- T
+		u <- ufun(1:length(xdat))
+	}
+	else {
+		if(length(ufun) == length(xdat))
+			u <- ufun
+		else u <- rep(ufun, length(xdat))
+	}
+	xdatu <- xdat[xdat > u]
+	xind <- (1:length(xdat))[xdat > u]
+	u <- u[xind]
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, length(xdatu)))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, length(xdatu)), ydat[xind, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdatu)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdatu)), ydat[xind, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, length(xdatu)))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, length(xdatu)), ydat[xind, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	init <- c(muinit, siginit, shinit)
+	npmu <- length(mul) + 1
+	npsc <- length(sigl) + 1
+	npsh <- length(shl) + 1
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	assign("xdatu", xdatu, frame = 1)
+	assign("xind", xind, frame = 1)
+	assign("u", u, frame = 1)
+	assign("n", length(xdat), frame = 1)
+	assign("npy", npy, frame = 1)
+	z$model <- list(mul, sigl, shl)
+	z$link <- deparse(substitute(c(mulink, siglink, shlink)))
+	if(is.function(ufun))
+		z$threshold <- deparse(substitute(ufun))
+	else z$threshold <- ufun
+	z$npy <- npy
+	z$nexc <- length(xdatu)
+	z$data <- xdatu
+	x <- nlmin(pp.lik, init, max.fcal = 500, max.iter = 450, print = 0, d
+		 = c(rep(1/var(xdat), npmu), rep(1/var(xdat), npsc), rep(1, 
+		npsh)))
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (x$x[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (x$x[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (x$x[seq(npmu + npsc + 1, length = npsh)]))
+	z$conv <- x$converged
+	z$nllh <- pp.lik(x$x)
+	h <- hess(pp.lik, x$x)
+	z$vals <- cbind(mu, sc, xi, u)
+	z$gpd <- apply(z$vals, 1, ppp, npy)
+	if(z$trans) {
+		z$data <- as.vector((1 + (xi * (xdatu - u))/z$gpd[2,  ])^(-1/xi
+			))
+	}
+	z$mle <- x$x
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	if(z$trans)
+		print(z[c(2, 3)])
+	if(length(z[[4]]) == 1)
+		print(z[4])
+	print(z[c(5, 6, 8)])
+	if(z$conv)
+		print(z[c(9, 12, 13)])
+	invisible(z)
+}
+"pp.fitrange"<-
+function(data, umin, umax, npy = 365, nint = 10)
+{
+#
+# produces estimates and 95% confidence intervals
+# for point process model across range of thresholds
+#
+	m <- matrix(0, nrow = nint, ncol = 3)
+	s <- matrix(0, nrow = nint, ncol = 3)
+	up <- matrix(0, nrow = nint, ncol = 3)
+	ul <- matrix(0, nrow = nint, ncol = 3)
+	u <- seq(umin, umax, length = nint)
+	for(i in 1:nint) {
+		z <- pp.fit(data, u[i], npy)
+		m[i,  ] <- z$mle
+		s[i,  ] <- z$se
+		up[i,  ] <- z$mle + 1.96 * z$se
+		ul[i,  ] <- z$mle - 1.96 * z$se
+	}
+	names <- c("Location", "Scale", "Shape")
+	par(mfrow = c(1, 3))
+	for(i in 1:3) {
+		um <- max(up[, i])
+		ud <- min(ul[, i])
+		plot(u, m[, i], ylim = c(ud, um), xlab = "Threshold", ylab = 
+			names[i], type = "b")
+		for(j in 1:nint)
+			lines(c(u[j], u[j]), c(ul[j, i], up[j, i]))
+	}
+}
+"pp.his"<-
+function(a, u, npy, dat)
+{
+#
+# function called by pp.diag
+# produces histogram and density plot
+#
+	h <- hist(dat, prob = T, plot = F)
+	x <- seq(u, max(h$breaks), length = 100)
+	gp <- ppp(c(a, u), npy)
+	y <- gpd.dens(gp[2:3], u, x)
+	hist(dat, prob = T, ylim = c(0, max(y)), xlab = "x", ylab = "f(x)", 
+		main = "Density Plot")
+	lines(x, y, col = 4)
+}
+"pp.lik"<-
+function(a)
+{
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
+	if(min(1 + ((xi * (u - mu))/sc)) < 0) {
+		l <- 10^6
+	}
+	else {
+		y <- (xdatu - mu)/sc
+		y <- 1 + xi * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- sum(log(sc)) + sum(log(y) * (1/xi + 1)) + n/npy * 
+				mean((1 + (xi * (u - mu))/sc)^(-1/xi))
+	}
+	l
+}
+"pp.pp"<-
+function(a, u, npy, dat)
+{
+#
+# function called by pp.diag
+# produces probability plot
+#
+	y <- apply(as.matrix(sort(dat)), 1, ppf, a = a, u = u, npy = npy)
+	plot((1:length(dat))/length(dat), y, xlab = "empirical", ylab = "model",
+		main = "Probability plot")
+	abline(0, 1, col = 4)
+}
+"pp.qq"<-
+function(a, u, npy, dat)
+{
+#
+# function called by pp.diag
+# computes quantile plot
+#
+	y <- apply(as.matrix((length(dat):1/(length(dat) + 1))), 1, ppq, a = a, 
+		u = u, npy = npy)
+	plot(y, sort(dat), ylab = "empirical", xlab = "model", main = 
+		"Quantile Plot")
+	abline(0, 1, col = 4)
+}
+"pp.rl"<-
+function(a, u, n, npy, mat, dat, xdat)
+{
+#
+# function called by pp.diag
+# produces return level curve and 95% confidence intervals
+# for fitted point process model
+#
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a3 <- a
+	gp <- ppp(c(a, u), npy)
+	a1[1] <- a[1] + eps
+	gp1 <- ppp(c(a1, u), npy)
+	a2[2] <- a[2] + eps
+	gp2 <- ppp(c(a2, u), npy)
+	a3[3] <- a[3] + eps
+	gp3 <- ppp(c(a3, u), npy)
+	jj <- seq(0, 3 + log10(npy), by = 0.1)
+	m <- c(1/gp[1], 10^jj)
+	q <- gpdq2(gp[2:3], u, gp[1], m)
+	d1 <- (gpdq2(gp1[2:3], u, gp1[1], m) - q)/eps
+	d2 <- (gpdq2(gp2[2:3], u, gp2[1], m) - q)/eps
+	d3 <- (gpdq2(gp3[2:3], u, gp3[1], m) - q)/eps
+	d <- cbind(d1, d2, d3)
+	v <- apply(d, 1, q.form, m = mat)
+	plot(m/npy, q, log = "x", type = "n", xlim = c(0.1, max(m)/npy), ylim
+		 = c(min(xdat, q), max(xdat, q[q > u - 1] + 1.96 * sqrt(v)[q > 
+		u - 1])), xlab = "Return period (years)", ylab = "Return level",
+		main = "Return Level Plot")
+	lines(m[q > u - 1]/npy, q[q > u - 1], col = 6)
+	lines(m[q > u - 1]/npy, q[q > u - 1] + 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	lines(m[q > u - 1]/npy, q[q > u - 1] - 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	nl <- n - length(dat) + 1
+	points(1/(1 - (1:n)/(n + 1))/npy, sort(xdat))
+	abline(h = u, col = 2)
+}
+"ppf"<-
+function(a, z, u, npy)
+{
+#
+# ancillary function
+# calculates distribution function in point process model
+#
+	b <- ppp(c(a, u), npy)
+	1 - (1 + (b[3] * (z - u))/b[2])^(-1/b[3])
+}
+"ppp"<-
+function(a, npy)
+{
+	u <- a[4]
+	la <- 1 - exp( - (1 + (a[3] * (u - a[1]))/a[2])^(-1/a[3])/npy)
+	sc <- a[2] + a[3] * (u - a[1])
+	xi <- a[3]
+	c(la, sc, xi)
+}
+"ppq"<-
+function(a, u, npy, p)
+{
+#
+# ancillary routine
+# finds quantiles in point process model
+#
+	b <- ppp(c(a, u), npy)
+	u + (b[2] * (((p))^( - b[3]) - 1))/b[3]
+}
+"q.form"<-
+function(d, m)
+{
+#
+# ancillary routine
+# evaluates quadratic forms
+#
+	t(as.matrix(d)) %*% m %*% as.matrix(d)
+}
+"rgev"<-
+function(p, n)
+{
+#
+# simulates gev data
+#
+	x <- runif(n)	#	x <- sort(x)
+	p[1] - (p[2] * (1 - ( - log(x))^( - p[3])))/p[3]
+}
+"rlarg.diag"<-
+function(z)
+{
+#
+# takes output from rlarg.fit
+# produces probability and quantile plots for
+# each order statistic
+#
+	z2 <- z
+	z2$data <- z$data[, 1]
+	if(z$trans) {
+		par(mfcol = c(2, z$r))
+		for(i in 1:z$r) {
+			rlarg.pp(c(0, 1, 0), z$data[, 1:z$r], i)
+			rlarg.qq(c(0, 1, 0), z$data[, 1:z$r], i)
+		}
+	}
+	else {
+		dev.ask(T)
+		gev.diag(z2)
+		par(mfcol = c(2, z$r))
+		for(i in 1:z$r) {
+			rlarg.pp(z$mle, z$data, i)
+			rlarg.qq(z$mle, z$data, i)
+		}
+	}
+	par(mfrow = c(1, 1))
+	dev.ask(F)
+	invisible()
+}
+"rlarg.fit"<-
+function(xdat, r = dim(xdat)[2], ydat = NULL, mul = NULL, sigl = NULL, shl = 
+	NULL, mulink = identity, siglink = identity, shlink = identity)
+{
+#
+# calculates mles etc for rlargest order statistic model
+#
+	z <- list()
+	assign("xdatu", xdat[, 1:r], frame = 1)
+	z$trans <- F
+	in2 <- sqrt((6 * var(xdat[, 1]))/pi)
+	in1 <- mean(xdat[, 1]) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, dim(xdat)[1]))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, dim(xdat)[1]), ydat[, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, dim(xdat)[1]))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, dim(xdat)[1]), ydat[, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, dim(xdat)[1]))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, dim(xdat)[1]), ydat[, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	init <- c(muinit, siginit, shinit)
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	z$model <- list(mul, sigl, shl)
+	z$link <- deparse(substitute(c(mulink, siglink, shlink)))
+	x <- nlmin(rlarg.lik, init, max.fcal = 200, max.iter = 150, print = 0)
+	z$conv <- x$converged
+	z$nllh <- rlarg.lik(x$x)
+	h <- hess(rlarg.lik, x$x)
+	z$data <- xdat
+	if(z$trans) {
+		for(i in 1:r)
+			z$data[, i] <-  - log((1 + (as.vector(xi) * (xdat[, i] - 
+				as.vector(mu)))/as.vector(sc))^(-1/as.vector(xi
+				)))
+	}
+	z$mle <- x$x
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	z$vals <- cbind(mu, sc, xi)
+	z$r <- r
+	if(z$trans)
+		print(z[c(2, 3)])
+	print(z[4])
+	if(z$conv)
+		print(z[c(5, 7, 8)])
+	invisible(z)
+}
+"rlarg.lik"<-
+function(a)
+{
+#
+# ancillary routine for rlarg.fit
+# calculates neg log lik
+#
+	xdatu <- as.matrix(xdatu)
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
+	assign("mu", mu, frame = 1)
+	assign("sc", sc, frame = 1)
+	assign("xi", xi, frame = 1)
+	l <- 0
+	nobs <- 1
+	for(i in 1:dim(xdatu)[1]) {
+		u <- min(xdatu[i,  ], na.rm = T)
+		if(min(1 + ((xi[i] * (u - mu[i]))/sc[i])) < 0) {
+			l <- 10^6
+		}
+		else {
+			y <- (xdatu[i, !is.na(xdatu[i,  ])] - mu[i])/sc[i]
+			y <- 1 + xi[i] * y
+			if(min(y) <= 0)
+				l <- 10^6
+			else l <- l + length(xdatu[i,  ]) * log(sc[i]) + sum(
+				  log(y)) * (1/xi[i] + 1) + ((1 + (xi[i] * (u - 
+				  mu[i]))/sc[i])^(-1/xi[i]))
+		}
+	}
+	l
+}
+"rlarg.pp"<-
+function(a, dat, k)
+{
+#
+# ancillary function
+# calculates probability plot in r largest model
+#
+	da <- dat[!is.na(dat[, k]), k]
+	plot((1:length(da))/length(da), rlargf(a, sort(da), k), xlab = "", ylab
+		 = "")
+	title(paste("k=", k, sep = ""), cex = 0.7)
+	abline(0, 1, col = 4)
+}
+"rlarg.qq"<-
+function(a, dat, k)
+{
+#
+# ancillary function
+# calculates quantile plot in r largest model
+#
+	da <- dat[!is.na(dat[, k]), k]
+	plot(rlargq(a, 1 - (1:length(da)/(length(da) + 1)), k, da), sort(da), 
+		xlab = "", ylab = "")
+	title(paste("k=", k, sep = ""), cex = 0.7)
+	abline(0, 1, col = 4)
+}
+"rlargf"<-
+function(a, z, k)
+{
+#
+# ancillary function
+# calculates dist fnc in r largest model
+#
+	eps <- 10^(-6)
+	res <- NULL
+	if(abs(a[3]) < eps)
+		tau <- exp( - (z - a[1])/a[2])
+	else tau <- (1 + (a[3] * (z - a[1]))/a[2])^(-1/a[3])
+	for(i in 1:length(tau)) {
+		if(is.na(tau[i]))
+			res[i] <- 1
+		else res[i] <- exp( - tau[i]) * sum(tau[i]^(0:(k - 1))/gamma(1:(
+				k)))
+	}
+	res
+}
+"rlargq"<-
+function(a, p, k, dat)
+{
+#
+# ancillary routine 
+# for finding quantiles in r largest model
+	res <- NULL
+	for(i in 1:length(p)) {
+		inter <- c(min(dat) - 1, max(dat) + 1)
+		res[i] <- uniroot(rlargq2, inter, a = a, kk = k, p = p[i])$root
+	}
+	res
+}
+"rlargq2"<-
+function(x, a, kk, p)
+{
+#
+# ancillary routine
+# for finding quantiles in r largest model
+#
+	res <- rlargf(a, x, kk) - (1 - p)
+	res
+}
+"sim.max"<-
+function(n, nobs, fun, ...)
+{
+#
+# simulates block maximum data
+#
+	x <- NULL
+	y <- fun(n * nobs, ...)
+	for(j in 1:n) {
+		x <- c(x, max(y[((j - 1) * nobs + 1):(j * nobs)]))
+	}
+	x
+}
+
+
+"wm" <-
+function(n,x)
+{
+# n �il nome
+# x �la serie dei dati
+
+mu <- NA
+sigma <- NA
+epsilon <- NA
+
+mu.error <- NA
+sigma.error <- NA
+epsilon.error <- NA
+
+
+maxx <- max(x)
+p <- NA
+RightEnd <- NA
+extimed.max <- NA
+error.extime <- NA
+ca <- NA
+
+mode<-"WM"
+converge <- NA
+likelihood <- NA
+number.samples <- length(x)
+threshold <- NA
+number.extremes <- NA
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"gev.ig" <-
+function(n,x,ca,v)
+{
+# n �il nome
+# x �la serie dei dati
+# c �il numero di campioni
+# v �il valore per cui stiamre la probabilit�di superamento
+
+massimi <- aggregate(x, by=x[,1], FUN =max)
+temp <- gev.fit(massimi[,3])
+graph <- gev.diag(temp)
+
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+maxx <- max(massimi[,3])
+p <- (exp(-((1+epsilon*(v-mu)/sigma)^(-1/epsilon))))^(1/ca)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+extimed.max <- v
+error.extime <- NA
+
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(massimi[,3])
+threshold <- NA
+number.extremes <- NA
+pmeanr <- pmean.rad(x[,2])
+enought.radius <- max(sqrt(x[,2]/pi))/2 > min (sqrt(x[,2]/pi))
+pmeana <- pmean.ar(x[,2])
+enought.area <- max(x[,2])/2 > min (x[,2])
+
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gev.eg"<-
+function(n,x,p,ca)
+{
+# n �il nome
+# x �la serie dei dati
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+
+massimi <- aggregate(x, by=x[,1], FUN =max)
+temp <- gev.fit(massimi[,3])
+graph <- gev.diag(temp)
+mu <- 0
+sigma <- 0
+epsilon <- 0
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+maxx <- max(massimi[,3])
+extimed.max <- mu-sigma/epsilon*(1-(-log(p^(ca)))^-epsilon)
+error.extime <- mu.error-sigma.error/epsilon.error*(1-(-log(p^(ca)))^-epsilon.error)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(massimi[,3])
+threshold <- NA
+number.extremes <- NA
+pmeanr <- pmean.rad(x[,2])
+enought.radius <- max(sqrt(x[,2]/pi))/2 > min (sqrt(x[,2]/pi))
+pmeana <- pmean.ar(x[,2])
+enought.area <- max(x[,2])/2 > min (x[,2])
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gpd.i" <-
+function(n,x,t,ca,v)
+{
+# n �il nome
+# x �la serie dei dati
+# t �la soglia
+# ca �il numero di campioni
+# v �il valore per cui stimare il superamento
+
+temp <- gpd.fit(x,t)
+graph <- gpd.diag(temp)
+
+mu <- NA
+sigma <- temp$mle[1]
+epsilon <- temp$mle[2]
+
+mu.error <- NA
+sigma.error <- temp$se[1]
+epsilon.error <- temp$se[2]
+
+threshold <- temp$threshold
+maxx <- max(x)
+p <- (1-(1+epsilon*(v-threshold)/sigma)^(-1/epsilon))^(1/ca)
+RightEnd <- sigma*(1/(1-1)^(epsilon/1))/epsilon+(epsilon*threshold-sigma)/epsilon
+
+error.extime <- NA
+extimed.max <- v
+mode<-"GDP"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+number.extremes <- temp$nexc
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gev.i" <-
+function(n,x,ca,v)
+{
+# n �il nome
+# x �la serie dei dati
+# ca �il numero di campioni
+# v �il valore per cui stiamre la probabilit�di superamento
+
+temp <- gev.fit(x)
+graph <- gev.diag(temp)
+
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+
+maxx <- max(x)
+p <- (exp(-((1+epsilon*(v-mu)/sigma)^(-1/epsilon))))^(1/ca)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+error.extime <- NA
+extimed.max <- v
+
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+threshold <- NA
+number.extremes <- NA
+pmeanr <- NA
+enought.radius <- NA
+pmeana <- NA
+enought.area <- NA
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"gpd.ev" <-
+function(n,x,t,p,ca)
+{
+# n �il nome della serie
+# x �la serie dei dati
+# t �la soglia
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+temp <- gpd.fit(x,t)
+
+mu <- NA
+sigma <- temp$mle[1]
+epsilon <- temp$mle[2]
+
+mu.error <- NA
+sigma.error <- temp$se[1]
+epsilon.error <- temp$se[2]
+
+threshold <- temp$threshold
+maxx <- max(x)
+extimed.max <- sigma*(1/(1-p)^(epsilon/ca))/epsilon+(epsilon*threshold-sigma)/epsilon
+error.extime <- sigma.error*(1/(1-p)^(epsilon.error/ca))/epsilon.error+(epsilon.error-sigma.error)/epsilon.error
+RightEnd <- sigma*(1/(1-1)^(epsilon/1))/epsilon+(epsilon*threshold-sigma)/epsilon
+mode<-"GDP"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+number.extremes <- temp$nexc
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"gpd.e" <-
+function(n,x,t,p,ca)
+{
+# n �il nome della serie
+# x �la serie dei dati
+# t �la soglia
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+temp <- gpd.fit(x,t)
+graph <- gpd.diag(temp)
+
+mu <- NA
+sigma <- temp$mle[1]
+epsilon <- temp$mle[2]
+
+mu.error <- NA
+sigma.error <- temp$se[1]
+epsilon.error <- temp$se[2]
+
+threshold <- temp$threshold
+maxx <- max(x)
+extimed.max <- sigma*(1/(1-p)^(epsilon/ca))/epsilon+(epsilon*threshold-sigma)/epsilon
+error.extime <- sigma.error*(1/(1-p)^(epsilon.error/ca))/epsilon.error+(epsilon.error-sigma.error)/epsilon.error
+RightEnd <- sigma*(1/(1-1)^(epsilon/1))/epsilon+(epsilon*threshold-sigma)/epsilon
+mode<-"GDP"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+number.extremes <- temp$nexc
+pmeanr <- pmean.rad(x)
+enought.radius <- max(sqrt(x/pi))/2 > min (sqrt(x/pi))
+pmeana <- pmean.ar(x)
+enought.area <- max(x)/2 > min (x)
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+"gev.e"<-
+function(n,x,p,ca)
+{
+# n �il nome
+# x �la serie dei dati
+# p �la probabilit�di non superamento
+# ca �il numero di campioni
+
+temp <- gev.fit(x)
+graph <- gev.diag(temp)
+mu <- temp$mle[1]
+sigma <- temp$mle[2]
+epsilon <- temp$mle[3]
+
+mu.error <- temp$se[1]
+sigma.error <- temp$se[2]
+epsilon.error <- temp$se[3]
+
+maxx <- max(x)
+extimed.max <- mu-sigma/epsilon*(1-(-log(p^(ca)))^-epsilon)
+error.extime <- mu.error-sigma.error/epsilon.error*(1-(-log(p^(ca)))^-epsilon.error)
+RightEnd <- mu-sigma/epsilon*(1-(-log(1^(1)))^-epsilon)
+mode<-"GEV"
+converge <- temp$conv
+likelihood <- temp$nllh
+number.samples <- length(x)
+threshold <- NA
+number.extremes <- NA
+pmeanr <- NA
+enought.radius <- NA
+pmeana <- NA
+enought.area <- NA
+
+return(data.frame(n,mode,converge,likelihood,number.samples,p,ca,maxx,extimed.max,error.extime,threshold,number.extremes,RightEnd,mu,sigma,epsilon,mu.error,sigma.error,epsilon.error,pmeanr,enought.radius,pmeana,enought.area))
+}
+
+
+"pmean.rad" <- function(A)
+{
+# Met�dell massimo del raggio
+# A �la serie delle aree
+temp <- sqrt(A/pi)
+temp1 <- 9999
+for (i in 1:length(temp))
+		{if (temp[i] > max(temp)/2) (temp1 <- rbind(temp1, temp[i]))}
+temp1 <- remove.row(target = temp1, start.row = 1, count = 1)
+result <- (sum(temp1^5)/sum(temp1^4))^2*pi
+}
+
+"pmean.ar" <- function(A)
+{
+# Met�dell massimo del raggio
+# A �la serie delle aree
+temp <- sqrt(A/pi)
+temp1 <- 9999
+for (i in 1:length(temp))
+		{if (A[i] > max(A)/2) (temp1 <- rbind(temp1, temp[i]))}
+temp1 <- remove.row(target = temp1, start.row = 1, count = 1)
+result <- (sum(temp1^5)/sum(temp1^4))^2*pi
+}
+
+"gev.dens"<-
+function(a, z)
+{
+#
+# evaluates gev density with parameters a at z
+#
+	if(a[3] != 0) (exp( - (1 + (a[3] * (z - a[1]))/a[2])^(-1/a[3])) * (1 + (
+			a[3] * (z - a[1]))/a[2])^(-1/a[3] - 1))/a[2] else {
+		gum.dens(c(a[1], a[2]), z)
+	}
+}
+"gev.diag"<-
+function(z)
+{
+#
+# produces diagnostic plots for output of
+# gev.fit stored in z
+#
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	{
+		if(z$trans) {
+			par(mfrow = c(1, 2))
+			plot(x, exp( - exp( - sort(z$data))), xlab = 
+				"Empirical", ylab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Probability Plot")
+			plot( - log( - log(x)), sort(z$data), ylab = 
+				"Empirical", xlab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Quantile Plot (Gumbel Scale)")
+		}
+		else {
+			par(mfrow = c(2, 2))
+			gev.pp(z$mle, z$data)
+			gev.qq(z$mle, z$data)
+			gev.rl(z$mle, z$cov, z$data)
+			gev.his(z$mle, z$data)
+		}
+		par(mfrow = c(1, 1))
+		invisible()
+	}
+}
+"gev.fit"<-
+function(xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL, mulink = 
+	identity, siglink = identity, shlink = identity)
+{
+#
+# obtains mles etc for gev distn
+#
+	z <- list()
+	z$trans <- F	# if maximization fails, could try
+# changing in1 and in2 which are 
+# initial values for minimization routine
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, length(xdat)))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, length(xdat)), ydat[, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdat)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdat)), ydat[, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, length(xdat)))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, length(xdat)), ydat[, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	z$model <- list(mul, sigl, shl)
+	z$link <- deparse(substitute(c(mulink, siglink, shlink)))
+	init <- c(muinit, siginit, shinit)
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	x <- nlmin(gev.lik, init, max.fcal = 200, max.iter = 150, print = 0)
+	z$conv <- x$converged
+	if(z$conv) {
+		z$nllh <- gev.lik(x$x)
+		h <- hess(gev.lik, x$x)
+		z$data <- xdat
+		z$trans
+		if(z$trans) {
+			z$data <-  - log(as.vector((1 + (xi * (xdat - mu))/sc)^(
+				-1/xi)))
+		}
+		z$mle <- x$x
+		z$se <- sqrt(diag(h))
+		z$cov <- h
+		z$vals <- cbind(mu, sc, xi)
+	}
+	if(z$trans)
+		print(z[c(2, 3, 4)])
+	else print(z[4])
+	if(z$conv) {
+		print(z[c(5, 7, 8)])
+	}
+	invisible(z)
+}
+"gev.his"<-
+function(a, dat)
+{
+#
+# Plots histogram of data and fitted density
+# for output of gev.fit stored in z
+#
+	h <- hist(dat, prob = T, plot = F)
+	if(a[3] < 0) {
+		x <- seq(min(h$breaks), min(max(h$breaks), (a[1] - a[2]/a[3] - 
+			0.001)), length = 100)
+	}
+	else {
+		x <- seq(max(min(h$breaks), (a[1] - a[2]/a[3] + 0.001)), max(h$
+			breaks), length = 100)
+	}
+	y <- gev.dens(a, x)
+	hist(dat, prob = T, ylim = c(0, max(y)), xlab = "z", ylab = "f(z)", 
+		main = "Density Plot")
+	points(dat, rep(0, length(dat)))
+	lines(x, y)
+}
+"gev.lik"<-
+function(a)
+{
+#
+# support routine for gev.fit
+# computes neg log lik of gev model
+#
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
+	assign("mu", mu, frame = 1)
+	assign("sc", sc, frame = 1)
+	assign("xi", xi, frame = 1)
+	y <- (xdat - mu)/sc
+	y <- 1 + xi * y
+	if(min(y) <= 0)
+		l <- 10^6
+	else l <- sum(log(sc)) + sum(y^(-1/xi)) + sum(log(y) * (1/xi + 1))
+	l
+}
+"gev.plik"<-
+function(a)
+{
+#
+# support routine for gev.prof
+# computes profile neg log lik
+#
+	if(p != 0) mu <- xp - a[1]/a[2] * (( - log(1 - p))^( - a[2]) - 1) else 
+			mu <- xp + a[1]/a[2]
+	if(abs(a[2]) < 10^(-6))
+		l <- gum.lik(c(a[1], mu))
+	else {
+		y <- (xdat - mu)/a[1]
+		y <- 1 + a[2] * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(a[1]) + sum(y^(-1/a[2])) + sum(log(
+				y)) * (1/a[2] + 1)
+	}
+	l
+}
+"gev.plikxi"<-
+function(a)
+{
+#
+# support routine for gev.profxi
+# computes profile neg lok lik
+#
+	if(abs(xi) < 10^(-4)) l <- gum.lik(c(a[1], a[2])) else {
+		y <- (xdat - a[1])/a[2]
+		y <- 1 + xi * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(a[2]) + sum(y^(-1/xi)) + sum(log(y
+				)) * (1/xi + 1)
+	}
+	l
+}
+"gev.pp"<-
+function(a, dat)
+{
+#
+# sub-function for gev.diag
+# produces probability plot
+#
+	plot((1:length(dat))/length(dat), gevf(a, sort(dat)), xlab = 
+		"Empirical", ylab = "Model", main = "Probability Plot")
+	abline(0, 1, col = 4)
+}
+"gev.prof"<-
+function(z, m, xlow, xup, conf = 0.95, nint = 100)
+{
+#
+# plots profile log likelihood for m 'year' return level
+# in gev model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	p <- 1/m
+	v <- NULL
+	x <- seq(xlow, xup, length = nint)
+	sol <- c(z$mle[2], z$mle[3])
+	for(i in 1:(length(x))) {
+		assign("xp", x[i], frame = 1)
+		assign("p", p, frame = 1)
+		sol <- nlmin(gev.plik, sol, print = 0)$x
+		v[i] <- gev.plik(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Return Level", ylab = 
+		" Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma, col = 4)
+	abline(h = ma - 0.5 * qchisq(conf, 1), col = 4)
+	invisible()
+}
+"gev.profxi"<-
+function(z, xlow, xup, conf = 0.95, nint = 100)
+{
+#
+# plots profile log-likelihood for shape parameter
+# in gev model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	v <- NULL
+	x <- seq(xup, xlow, length = nint)
+	sol <- c(z$mle[1], z$mle[2])
+	for(i in 1:(length(x))) {
+		assign("xi", x[i], frame = 1)
+		sol <- nlmin(gev.plikxi, sol, print = 0)$x
+		v[i] <- gev.plikxi(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Shape Parameter", ylab = 
+		"Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma, col = 4)
+	abline(h = ma - 0.5 * qchisq(conf, 1), col = 4)
+	invisible()
+}
+"gev.qq"<-
+function(a, dat)
+{
+#
+# function called by gev.diag
+# produces quantile plot
+#
+	plot(gevq(a, 1 - (1:length(dat)/(length(dat) + 1))), sort(dat), ylab = 
+		"Empirical", xlab = "Model", main = "Quantile Plot")
+	abline(0, 1, col = 4)
+}
+"gev.rl"<-
+function(a, mat, dat)
+{
+#
+# function called by gev.diag
+# produces return level curve and 95 % confidence intervals
+# on usual scale
+#
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a3 <- a
+	a1[1] <- a[1] + eps
+	a2[2] <- a[2] + eps
+	a3[3] <- a[3] + eps
+	f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 
+		0.8, 0.9, 0.95, 0.99, 0.995, 0.999)
+	q <- gevq(a, 1 - f)
+	d1 <- (gevq(a1, 1 - f) - q)/eps
+	d2 <- (gevq(a2, 1 - f) - q)/eps
+	d3 <- (gevq(a3, 1 - f) - q)/eps
+	d <- cbind(d1, d2, d3)
+	v <- apply(d, 1, q.form, m = mat)
+	plot((f), q, "x", type = "n", xlim = c(0.01, 1), ylim = c(
+		min(dat, q), max(dat, q)), xlab = "Probability", ylab = 
+		"Return Level")
+	title("Probability Plot")
+	lines((f), q)
+	lines((f), q + 1.96 * sqrt(v), col = 4)
+	lines((f), q - 1.96 * sqrt(v), col = 4)
+	points(((1:length(dat))/(length(dat) + 1)), sort(dat))
+}
+"gevf"<-
+function(a, z)
+{
+#
+# ancillary function calculates gev dist fnc
+#
+	if(a[3] != 0) exp( - (1 + (a[3] * (z - a[1]))/a[2])^(-1/a[3])) else 
+			gum.df(z, a[1], a[2])
+}
+"gevq"<-
+function(a, p)
+{
+	if(a[3] != 0)
+		a[1] + (a[2] * (( - log(1 - p))^( - a[3]) - 1))/a[3]
+	else gum.q(p, a[1], a[2])
+}
+"gpd.dens"<-
+function(a, u, z)
+{
+#
+# ancillary function computes gpd density
+#
+	(1 + (a[2] * (z - u))/a[1])^(-1/a[2] - 1)/a[1]
+}
+"gpd.diag"<-
+function(z)
+{
+#
+# produces diagnostic plots for gpd model
+# estimated using gpd.fit with output stored in z
+#
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	{
+		if(z$trans) {
+			par(mfrow = c(1, 2))
+			plot(x, 1 - exp( - sort(z$data)), xlab = "Empirical", 
+				ylab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Probability Plot")
+			plot( - log(1 - x), sort(z$data), ylab = "Empirical", 
+				xlab = "Model")
+			abline(0, 1, col = 4)
+			title("Residual Quantile Plot (Exptl. Scale)")
+		}
+		else {
+			par(mfrow = c(2, 2))
+			gpd.pp(z$mle, z$threshold, z$data)
+			gpd.qq(z$mle, z$threshold, z$data)
+			gpd.rl(z$mle, z$threshold, z$rate, z$n, z$npy, z$cov, z$
+				data, z$xdata)
+			gpd.his(z$mle, z$threshold, z$data)
+		}
+		invisible()
+	}
+	par(mfrow = c(1, 1))
+}
+"gpd.fit"<-
+function(xdat, ufun, npy = 365, ydat = NULL, sigl = NULL, shl = NULL, siglink
+	 = identity, shlink = identity)
+{
+# 
+# obtains mles etc for gpd model
+#
+	z <- list()
+	z$trans <- F
+	if(is.function(ufun)) {
+		z$trans <- T
+		u <- ufun(1:length(xdat))
+	}
+	else {
+		if(length(ufun) == length(xdat)) {
+			u <- ufun
+		}
+		else u <- rep(ufun, length(xdat))
+	}
+	xdatu <- xdat[xdat > u]
+	xind <- (1:length(xdat))[xdat > u]
+	u <- u[xind]	#
+# if routine fails try changing initialization values
+# of in1 and in2
+#
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat, na.rm = T) - 0.57722 * in2
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdatu)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdatu)), ydat[xind, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, length(xdatu)))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, length(xdatu)), ydat[xind, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	init <- c(siginit, shinit)
+	npsc <- length(sigl) + 1
+	npsh <- length(shl) + 1
+	assign("xdat", xdat, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	assign("xdatu", xdatu, frame = 1)
+	assign("xind", xind, frame = 1)
+	assign("u", u, frame = 1)
+	assign("n", length(xdat), frame = 1)
+	assign("npy", npy, frame = 1)
+	z$model <- list(sigl, shl)
+	z$link <- deparse(substitute(c(siglink, shlink)))
+	if(is.function(ufun))
+		z$threshold <- deparse(substitute(ufun))
+	else z$threshold <- ufun
+	z$nexc <- length(xdatu)
+	z$data <- xdatu	#	cat(gpd.lik(init), fill = T)
+	x <- nlmin(gpd.lik, init, max.fcal = 1000, max.iter = 950, print = 0, d
+		 = c(rep(1/var(xdat), npsc), rep(1, npsh)))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (x$x[seq(1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (x$x[seq(npsc + 1, length = npsh)]))
+	z$conv <- x$converged
+	z$nllh <- gpd.lik(x$x)
+	h <- hess(gpd.lik, x$x)
+	z$vals <- cbind(sc, xi, u)
+	if(z$trans) {
+		z$data <-  - log(as.vector((1 + (xi * (xdatu - u))/sc)^(-1/xi))
+			)
+	}
+	z$mle <- x$x
+	z$rate <- length(xdatu)/length(xdat)
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	z$n <- n
+	z$npy <- npy
+	z$xdata <- xdat
+	if(z$trans)
+		print(z[c(2, 3)])
+	if(length(z[[4]]) == 1)
+		print(z[4])
+	print(z[c(5, 7)])
+	if(z$conv)
+		print(z[c(8, 10, 11, 12)])
+	invisible(z)
+}
+"gpd.fitrange"<-
+function(data, umin, umax, nint = 10)
+{
+#
+# computes mle's in gpd model, adjusted for threshold, 
+# over range of threshold choices.
+#
+	m <- matrix(0, nrow = nint, ncol = 2)
+	s <- matrix(0, nrow = nint, ncol = 2)
+	up <- matrix(0, nrow = nint, ncol = 2)
+	ul <- matrix(0, nrow = nint, ncol = 2)
+	u <- seq(umin, umax, length = nint)
+	for(i in 1:nint) {
+		z <- gpd.fit(data, u[i])
+		m[i,  ] <- z$mle
+		m[i, 1] <- m[i, 1] - m[i, 2] * u[i]
+		d <- matrix(c(1,  - u[i]), ncol = 1)
+		v <- t(d) %*% z$cov %*% d
+		s[i,  ] <- z$se
+		s[i, 1] <- sqrt(v)
+		up[i,  ] <- m[i,  ] + 1.96 * s[i,  ]
+		ul[i,  ] <- m[i,  ] - 1.96 * s[i,  ]
+	}
+	names <- c("Modified Scale", "Shape")
+	par(mfrow = c(2, 1))
+	for(i in 1:2) {
+		um <- max(up[, i])
+		ud <- min(ul[, i])
+		plot(u, m[, i], ylim = c(ud, um), xlab = "Threshold", ylab = 
+			names[i], type = "b")
+		for(j in 1:nint)
+			lines(c(u[j], u[j]), c(ul[j, i], up[j, i]))
+	}
+}
+"gpd.his"<-
+function(a, u, dat)
+{
+#
+# function called by gpd.diag
+# produces histogram and density plot
+#
+	h <- hist(dat, prob = T, plot = F)
+	x <- seq(u, max(h$breaks), length = 100)
+	y <- gpd.dens(a, u, x)
+	hist(dat, prob = T, ylim = c(0, max(y)), xlab = "x", ylab = "f(x)", 
+		main = "Density Plot")
+	lines(x, y, col = 4)
+}
+"gpd.lik"<-
+function(a)
+{
+#
+# ancillary function for gpd.fit
+# calculates gpd neg log lik
+#
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npsc + 1, length = npsh)]))
+	y <- (xdatu - u)/sc
+	y <- 1 + xi * y
+	if(min(sc) <= 0)
+		l <- 10^6
+	else {
+		if(min(y) <= 0)
+			l <- 10^6
+		else {
+			l <- sum(log(sc)) + sum(log(y) * (1/xi + 1))
+		}
+	}
+	l
+}
+"gpd.plik"<-
+function(a)
+{
+#
+# ancillary function for gpd.prof
+# calculates profile neg log lik
+#
+	if(m != Inf) sc <- (a * (xp - u))/((m * la)^a - 1) else sc <- (u - xp)/
+			a
+	if(abs(a) < 10^(-4))
+		l <- length(xdat) * log(sc) + sum(xdat - u)/sc
+	else {
+		y <- (xdat - u)/sc
+		y <- 1 + a * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(sc) + sum(log(y)) * (1/a + 1)
+	}
+	l
+}
+"gpd.plikxi"<-
+function(a)
+{
+#
+# ancillary function for gpd.profxi
+# calculates profile log lik
+#
+	if(abs(xi) < 10^(-4)) l <- length(xdat) * log(a) + sum(xdat - u)/a
+		 else {
+		y <- (xdat - u)/a
+		y <- 1 + xi * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- length(xdat) * log(a) + sum(log(y)) * (1/xi + 1)
+	}
+	l
+}
+"gpd.pp"<-
+function(a, u, dat)
+{
+# 
+# function called by gpd.diag
+# produces probability plot for gpd model
+#
+	plot((1:length(dat))/length(dat), gpdf(a, u, sort(dat)), xlab = 
+		"Empirical", ylab = "Model", main = "Probability Plot")
+	abline(0, 1, col = 4)
+}
+"gpd.prof"<-
+function(z, m, xlow, xup, npy = 365, conf = 0.95, nint = 100)
+{
+#
+# plots profile log-likelihood for m-year return level
+# in gpd model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	assign("u", z$threshold, frame = 1)
+	assign("la", z$rate, frame = 1)
+	v <- NULL
+	x <- seq(xlow, xup, length = nint)
+	sol <- z$mle[2]
+	for(i in 1:(length(x))) {
+		assign("xp", x[i], frame = 1)
+		assign("m", m * npy, frame = 1)
+		sol <- nlmin(gpd.plik, sol, print = 0)$x
+		v[i] <- gpd.plik(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Return Level", ylab = 
+		"Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma)
+	abline(h = ma - 0.5 * qchisq(conf, 1))
+	invisible()
+}
+"gpd.profxi"<-
+function(z, xlow, xup, conf = 0.95, nint = 100)
+{
+#
+# plots profile log likelihood for shape parameter
+# in gpd model
+#
+	cat("If routine fails, try changing plotting interval", fill = T)
+	assign("xdat", z$data, frame = 1)
+	assign("u", z$threshold, frame = 1)
+	v <- NULL
+	x <- seq(xup, xlow, length = nint)
+	sol <- z$mle[1]
+	for(i in 1:(length(x))) {
+		assign("xi", x[i], frame = 1)
+		sol <- nlmin(gpd.plikxi, sol, print = 0)$x
+		v[i] <- gpd.plikxi(sol)
+	}
+	plot(x,  - v, type = "l", xlab = "Shape Parameter", ylab = 
+		"Profile Log-likelihood")
+	ma <-  - z$nllh
+	abline(h = ma, lty = 1)
+	abline(h = ma - 0.5 * qchisq(conf, 1), lty = 1)
+	invisible()
+}
+"gpd.qq"<-
+function(a, u, dat)
+{
+#
+# function called by gpd.diag
+# produces quantile plot for gpd model
+#
+	plot(gpdq(a, u, 1 - (1:length(dat)/(length(dat) + 1))), sort(dat), ylab
+		 = "Empirical", xlab = "Model", main = "Quantile Plot")
+	abline(0, 1, col = 4)
+}
+"gpd.rl"<-
+function(a, u, la, n, npy, mat, dat, xdat)
+{
+#
+# function called by gpd.diag
+# produces return level curve and 95% confidence intervals
+# for fitted gpd model
+	a <- c(la, a)
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a3 <- a
+	a1[1] <- a[1] + eps
+	a2[2] <- a[2] + eps
+	a3[3] <- a[3] + eps
+	jj <- seq(-1, 3.75 + log10(npy), by = 0.1)
+	m <- c(1/la, 10^jj)
+	q <- gpdq2(a[2:3], u, la, m)
+	d1 <- (gpdq2(a1[2:3], u, la, m) - q)/eps
+	d2 <- (gpdq2(a2[2:3], u, la, m) - q)/eps
+	d3 <- (gpdq2(a3[2:3], u, la, m) - q)/eps
+	d <- cbind(d1, d2, d3)
+	mat <- matrix(c((la * (1 - la))/n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, 
+		mat[2, 1], mat[2, 2]), nc = 3)
+	v <- apply(d, 1, q.form, m = mat)
+	plot(1/(m/npy), q, "x", type = "n", xlim = c(0.1, 1), ylim
+		 = c(u, max(xdat, q[q > u - 1] + 1.96 * sqrt(v)[q > u - 1])), 
+		xlab = "Probability", ylab = "Return level", main = 
+		"Probability Plot")
+	lines((m[q > u - 1]/npy), q[q > u - 1])
+	lines((m[q > u - 1]/npy), q[q > u - 1] + 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	lines((m[q > u - 1]/npy), q[q > u - 1] - 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	nl <- n - length(dat) + 1
+	sdat <- sort(xdat)
+	points((1/(1 - (1:n)/(n + 1))/npy)[sdat > u], sdat[sdat > u])	
+	#	points(1/(1 - (1:n)/(n + 1))/npy, 
+#		sort(xdat))
+#	abline(h = u, col = 3)
+}
+"gpdf"<-
+function(a, u, z)
+{
+#
+# ancillary function
+# calculates gpd distribution function
+#
+	1 - (1 + (a[2] * (z - u))/a[1])^(-1/a[2])
+}
+"gpdq"<-
+function(a, u, p)
+u + (a[1] * (p^( - a[2])	#
+# ancillary function
+# computes gpd quantiles
+#
+ - 1))/a[2]
+"gpdq2"<-
+function(a, u, la, m)
+{
+#
+# ancillary function
+# calculates quantiles of gpd model
+#
+	u + (a[1] * ((m * la)^(a[2]) - 1))/a[2]
+}
+"gum.dens"<-
+function(a, x)
+{
+#
+# ancillary function calculates density for gumbel model
+#
+	y <- (x - a[1])/a[2]
+	(exp( - y) * exp( - exp( - y)))/a[2]
+}
+"gum.df"<-
+function(x, a, b)
+{
+#
+# ancillary function calculates dist fnc of gumbel model
+#
+	exp( - exp( - (x - a)/b))
+}
+"gum.diag"<-
+function(z)
+{
+#
+# produces diagnostic plots for output of
+# gum.fit stored in z
+#
+	z$mle <- c(z$mle, 0)
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	{
+		if(z$trans) {
+			par(mfrow = c(1, 2))
+			plot(x, exp( - exp( - sort(z$data))), xlab = 
+				"empirical", ylab = "model")
+			abline(0, 1, col = 4)
+			title("Residual Probability Plot")
+			plot( - log( - log(x)), sort(z$data), xlab = 
+				"empirical", ylab = "model")
+			abline(0, 1, col = 4)
+			title("Residual Quantile Plot (Gumbel Scale)")
+		}
+		else {
+			par(mfrow = c(2, 2))
+			gev.pp(z$mle, z$data)
+			gev.qq(z$mle, z$data)
+			gum.rl(z$mle, z$cov, z$data)
+			gev.his(z$mle, z$data)
+		}
+		par(mfrow = c(1, 1))
+		invisible()
+	}
+}
+"gum.fit"<-
+function(xdat, ydat = NULL, mul = NULL, sigl = NULL, mulink = identity, siglink
+	 = identity)
+{
+#
+# finds mles etc for gumbel model
+#
+	z <- list()
+	z$trans <- F
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, length(xdat)))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, length(xdat)), ydat[, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdat)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdat)), ydat[, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	z$model <- list(mul, sigl)
+	z$link <- c(deparse(substitute(mulink)), deparse(substitute(siglink)))
+	init <- c(muinit, siginit)
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	x <- nlmin(gum.lik, init, max.fcal = 200, max.iter = 150, print = 0)
+	z$conv <- x$converged
+	z$nllh <- gum.lik(x$x)
+	h <- hess(gum.lik, x$x)
+	z$data <- xdat
+	z$trans
+	if(z$trans) {
+		z$data <- as.vector((xdat - mu)/sc)
+	}
+	z$mle <- x$x
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	z$vals <- cbind(mu, sc)
+	if(z$trans)
+		print(z[c(2, 3, 4)])
+	else print(z[4])
+	if(z$conv)
+		print(z[c(5, 7, 8)])
+	invisible(z)
+}
+"gum.lik"<-
+function(a)
+{
+#
+# ancillary routine or gum.fit
+# calculates neg log lik of gumbel model
+#
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	assign("mu", mu, frame = 1)
+	assign("sc", sc, frame = 1)
+	y <- (xdat - mu)/sc
+	l <- sum(log(sc)) + sum(y) + sum(exp( - y))
+	l
+}
+"gum.q"<-
+function(x, a, b)
+{
+#
+# ancillary routine
+# calculates quantiles of gumbel distn
+#
+	a - b * log( - log(1 - x))
+}
+"gum.rl"<-
+function(a, mat, dat)
+{
+#
+# function called by gum.diag
+# produces return level curve and 95 % confidence intervals
+# on usual scale for gumbel model
+#
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a1[1] <- a[1] + eps
+	a2[2] <- a[2] + eps
+	f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 
+		0.8, 0.9, 0.95, 0.99, 0.995, 0.999)
+	q <- gevq(a, 1 - f)
+	d1 <- (gevq(a1, 1 - f) - q)/eps
+	d2 <- (gevq(a2, 1 - f) - q)/eps
+	d <- cbind(d1, d2)
+	v <- apply(d, 1, q.form, m = mat)
+	plot(-1/log(f), q, log = "x", type = "n", xlim = c(0.1, 1000), ylim = c(
+		min(dat, q), max(dat, q)), xlab = "Return Period", ylab = 
+		"Return Level")
+	title("Return Level Plot")
+	lines(-1/log(f), q)
+	lines(-1/log(f), q + 1.96 * sqrt(v), col = 4)
+	lines(-1/log(f), q - 1.96 * sqrt(v), col = 4)
+	points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
+}
+"hess"<-
+function(f, x, ep = 10^-4)
+{
+	eps <- ep * x
+	n <- length(x)
+	m <- matrix(0, ncol = n, nrow = n)
+	for(i in 1:n) {
+		for(j in 1:n) {
+			x1 <- x
+			x1[i] <- x1[i] + eps[i]
+			x1[j] <- x1[j] + eps[j]
+			x2 <- x
+			x2[i] <- x2[i] + eps[i]
+			x2[j] <- x2[j] - eps[j]
+			x3 <- x
+			x3[i] <- x3[i] - eps[i]
+			x3[j] <- x3[j] + eps[j]
+			x4 <- x
+			x4[i] <- x4[i] - eps[i]
+			x4[j] <- x4[j] - eps[j]
+			m[i, j] <- (f(x1) - f(x2) - f(x3) + f(x4))/(4 * eps[i] * 
+				eps[j])
+		}
+	}
+	solve(m)
+}
+"identity"<-
+function(x)
+x
+"mrl.plot"<-
+function(data, umin = min(data), umax = max(data) - 0.1, conf = 0.95, nint = 
+	100)
+{
+#
+# function to produce empirical mean residual life plot
+# as function of threshold.
+# confidence intervals included as well.
+#
+	x <- NULL
+	xu <- NULL
+	xl <- NULL
+	u <- seq(umin, umax, length = nint)
+	for(i in 1:nint) {
+		data <- data[data > u[i]]
+		x[i] <- mean(data - u[i])
+		sdev <- sqrt(var(data))
+		n <- length(data)
+		xu[i] <- x[i] + (qnorm((1 + conf)/2) * sdev)/sqrt(n)
+		xl[i] <- x[i] - (qnorm((1 + conf)/2) * sdev)/sqrt(n)
+	}
+	plot(u, x, type = "l", xlab = "u", ylab = "Mean Excess", ylim = c(min(
+		xl[!is.na(xl)]), max(xu[!is.na(xu)])))
+	lines(u[!is.na(xl)], xl[!is.na(xl)], lty = 2)
+	lines(u[!is.na(xu)], xu[!is.na(xu)], lty = 2)
+}
+"pp.diag"<-
+function(z)
+{
+	n <- length(z$data)
+	x <- (1:n)/(n + 1)
+	if(z$trans) {
+		par(mfrow = c(1, 2))
+		plot(x, sort(z$data), xlab = "empirical", ylab = "model")
+		abline(0, 1, col = 3)
+		title("Residual Probability Plot")
+		plot( - log(1 - x),  - log(1 - sort(z$data)), ylab = 
+			"empirical", xlab = "model")
+		abline(0, 1, col = 3)
+		title("Residual quantile Plot (Exptl. Scale)")
+	}
+	else {
+		par(mfrow = c(1, 2), pty = "s")
+		pp.pp(z$mle, z$threshold, z$npy, z$data)
+		pp.qq(z$mle, z$threshold, z$npy, z$data)
+	}
+	par(mfrow = c(1, 1))
+	invisible()
+}
+"pp.fit"<-
+function(xdat, ufun, npy = 365, ydat = NULL, mul = NULL, sigl = NULL, shl = 
+	NULL, mulink = identity, siglink = identity, shlink = identity)
+{
+	z <- list()
+	z$trans <- F
+	if(is.function(ufun)) {
+		z$trans <- T
+		u <- ufun(1:length(xdat))
+	}
+	else {
+		if(length(ufun) == length(xdat))
+			u <- ufun
+		else u <- rep(ufun, length(xdat))
+	}
+	xdatu <- xdat[xdat > u]
+	xind <- (1:length(xdat))[xdat > u]
+	u <- u[xind]
+	in2 <- sqrt((6 * var(xdat))/pi)
+	in1 <- mean(xdat) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, length(xdatu)))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, length(xdatu)), ydat[xind, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, length(xdatu)))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, length(xdatu)), ydat[xind, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, length(xdatu)))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, length(xdatu)), ydat[xind, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	init <- c(muinit, siginit, shinit)
+	npmu <- length(mul) + 1
+	npsc <- length(sigl) + 1
+	npsh <- length(shl) + 1
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	assign("xdatu", xdatu, frame = 1)
+	assign("xind", xind, frame = 1)
+	assign("u", u, frame = 1)
+	assign("n", length(xdat), frame = 1)
+	assign("npy", npy, frame = 1)
+	z$model <- list(mul, sigl, shl)
+	z$link <- deparse(substitute(c(mulink, siglink, shlink)))
+	if(is.function(ufun))
+		z$threshold <- deparse(substitute(ufun))
+	else z$threshold <- ufun
+	z$npy <- npy
+	z$nexc <- length(xdatu)
+	z$data <- xdatu
+	x <- nlmin(pp.lik, init, max.fcal = 500, max.iter = 450, print = 0, d
+		 = c(rep(1/var(xdat), npmu), rep(1/var(xdat), npsc), rep(1, 
+		npsh)))
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (x$x[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (x$x[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (x$x[seq(npmu + npsc + 1, length = npsh)]))
+	z$conv <- x$converged
+	z$nllh <- pp.lik(x$x)
+	h <- hess(pp.lik, x$x)
+	z$vals <- cbind(mu, sc, xi, u)
+	z$gpd <- apply(z$vals, 1, ppp, npy)
+	if(z$trans) {
+		z$data <- as.vector((1 + (xi * (xdatu - u))/z$gpd[2,  ])^(-1/xi
+			))
+	}
+	z$mle <- x$x
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	if(z$trans)
+		print(z[c(2, 3)])
+	if(length(z[[4]]) == 1)
+		print(z[4])
+	print(z[c(5, 6, 8)])
+	if(z$conv)
+		print(z[c(9, 12, 13)])
+	invisible(z)
+}
+"pp.fitrange"<-
+function(data, umin, umax, npy = 365, nint = 10)
+{
+#
+# produces estimates and 95% confidence intervals
+# for point process model across range of thresholds
+#
+	m <- matrix(0, nrow = nint, ncol = 3)
+	s <- matrix(0, nrow = nint, ncol = 3)
+	up <- matrix(0, nrow = nint, ncol = 3)
+	ul <- matrix(0, nrow = nint, ncol = 3)
+	u <- seq(umin, umax, length = nint)
+	for(i in 1:nint) {
+		z <- pp.fit(data, u[i], npy)
+		m[i,  ] <- z$mle
+		s[i,  ] <- z$se
+		up[i,  ] <- z$mle + 1.96 * z$se
+		ul[i,  ] <- z$mle - 1.96 * z$se
+	}
+	names <- c("Location", "Scale", "Shape")
+	par(mfrow = c(1, 3))
+	for(i in 1:3) {
+		um <- max(up[, i])
+		ud <- min(ul[, i])
+		plot(u, m[, i], ylim = c(ud, um), xlab = "Threshold", ylab = 
+			names[i], type = "b")
+		for(j in 1:nint)
+			lines(c(u[j], u[j]), c(ul[j, i], up[j, i]))
+	}
+}
+"pp.his"<-
+function(a, u, npy, dat)
+{
+#
+# function called by pp.diag
+# produces histogram and density plot
+#
+	h <- hist(dat, prob = T, plot = F)
+	x <- seq(u, max(h$breaks), length = 100)
+	gp <- ppp(c(a, u), npy)
+	y <- gpd.dens(gp[2:3], u, x)
+	hist(dat, prob = T, ylim = c(0, max(y)), xlab = "x", ylab = "f(x)", 
+		main = "Density Plot")
+	lines(x, y, col = 4)
+}
+"pp.lik"<-
+function(a)
+{
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
+	if(min(1 + ((xi * (u - mu))/sc)) < 0) {
+		l <- 10^6
+	}
+	else {
+		y <- (xdatu - mu)/sc
+		y <- 1 + xi * y
+		if(min(y) <= 0)
+			l <- 10^6
+		else l <- sum(log(sc)) + sum(log(y) * (1/xi + 1)) + n/npy * 
+				mean((1 + (xi * (u - mu))/sc)^(-1/xi))
+	}
+	l
+}
+"pp.pp"<-
+function(a, u, npy, dat)
+{
+#
+# function called by pp.diag
+# produces probability plot
+#
+	y <- apply(as.matrix(sort(dat)), 1, ppf, a = a, u = u, npy = npy)
+	plot((1:length(dat))/length(dat), y, xlab = "empirical", ylab = "model",
+		main = "Probability plot")
+	abline(0, 1, col = 4)
+}
+"pp.qq"<-
+function(a, u, npy, dat)
+{
+#
+# function called by pp.diag
+# computes quantile plot
+#
+	y <- apply(as.matrix((length(dat):1/(length(dat) + 1))), 1, ppq, a = a, 
+		u = u, npy = npy)
+	plot(y, sort(dat), ylab = "empirical", xlab = "model", main = 
+		"Quantile Plot")
+	abline(0, 1, col = 4)
+}
+"pp.rl"<-
+function(a, u, n, npy, mat, dat, xdat)
+{
+#
+# function called by pp.diag
+# produces return level curve and 95% confidence intervals
+# for fitted point process model
+#
+	eps <- 1e-006
+	a1 <- a
+	a2 <- a
+	a3 <- a
+	gp <- ppp(c(a, u), npy)
+	a1[1] <- a[1] + eps
+	gp1 <- ppp(c(a1, u), npy)
+	a2[2] <- a[2] + eps
+	gp2 <- ppp(c(a2, u), npy)
+	a3[3] <- a[3] + eps
+	gp3 <- ppp(c(a3, u), npy)
+	jj <- seq(0, 3 + log10(npy), by = 0.1)
+	m <- c(1/gp[1], 10^jj)
+	q <- gpdq2(gp[2:3], u, gp[1], m)
+	d1 <- (gpdq2(gp1[2:3], u, gp1[1], m) - q)/eps
+	d2 <- (gpdq2(gp2[2:3], u, gp2[1], m) - q)/eps
+	d3 <- (gpdq2(gp3[2:3], u, gp3[1], m) - q)/eps
+	d <- cbind(d1, d2, d3)
+	v <- apply(d, 1, q.form, m = mat)
+	plot(m/npy, q, log = "x", type = "n", xlim = c(0.1, max(m)/npy), ylim
+		 = c(min(xdat, q), max(xdat, q[q > u - 1] + 1.96 * sqrt(v)[q > 
+		u - 1])), xlab = "Return period (years)", ylab = "Return level",
+		main = "Return Level Plot")
+	lines(m[q > u - 1]/npy, q[q > u - 1], col = 6)
+	lines(m[q > u - 1]/npy, q[q > u - 1] + 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	lines(m[q > u - 1]/npy, q[q > u - 1] - 1.96 * sqrt(v)[q > u - 1], col
+		 = 4)
+	nl <- n - length(dat) + 1
+	points(1/(1 - (1:n)/(n + 1))/npy, sort(xdat))
+	abline(h = u, col = 2)
+}
+"ppf"<-
+function(a, z, u, npy)
+{
+#
+# ancillary function
+# calculates distribution function in point process model
+#
+	b <- ppp(c(a, u), npy)
+	1 - (1 + (b[3] * (z - u))/b[2])^(-1/b[3])
+}
+"ppp"<-
+function(a, npy)
+{
+	u <- a[4]
+	la <- 1 - exp( - (1 + (a[3] * (u - a[1]))/a[2])^(-1/a[3])/npy)
+	sc <- a[2] + a[3] * (u - a[1])
+	xi <- a[3]
+	c(la, sc, xi)
+}
+"ppq"<-
+function(a, u, npy, p)
+{
+#
+# ancillary routine
+# finds quantiles in point process model
+#
+	b <- ppp(c(a, u), npy)
+	u + (b[2] * (((p))^( - b[3]) - 1))/b[3]
+}
+"q.form"<-
+function(d, m)
+{
+#
+# ancillary routine
+# evaluates quadratic forms
+#
+	t(as.matrix(d)) %*% m %*% as.matrix(d)
+}
+"rgev"<-
+function(p, n)
+{
+#
+# simulates gev data
+#
+	x <- runif(n)	#	x <- sort(x)
+	p[1] - (p[2] * (1 - ( - log(x))^( - p[3])))/p[3]
+}
+"rlarg.diag"<-
+function(z)
+{
+#
+# takes output from rlarg.fit
+# produces probability and quantile plots for
+# each order statistic
+#
+	z2 <- z
+	z2$data <- z$data[, 1]
+	if(z$trans) {
+		par(mfcol = c(2, z$r))
+		for(i in 1:z$r) {
+			rlarg.pp(c(0, 1, 0), z$data[, 1:z$r], i)
+			rlarg.qq(c(0, 1, 0), z$data[, 1:z$r], i)
+		}
+	}
+	else {
+		dev.ask(T)
+		gev.diag(z2)
+		par(mfcol = c(2, z$r))
+		for(i in 1:z$r) {
+			rlarg.pp(z$mle, z$data, i)
+			rlarg.qq(z$mle, z$data, i)
+		}
+	}
+	par(mfrow = c(1, 1))
+	dev.ask(F)
+	invisible()
+}
+"rlarg.fit"<-
+function(xdat, r = dim(xdat)[2], ydat = NULL, mul = NULL, sigl = NULL, shl = 
+	NULL, mulink = identity, siglink = identity, shlink = identity)
+{
+#
+# calculates mles etc for rlargest order statistic model
+#
+	z <- list()
+	assign("xdatu", xdat[, 1:r], frame = 1)
+	z$trans <- F
+	in2 <- sqrt((6 * var(xdat[, 1]))/pi)
+	in1 <- mean(xdat[, 1]) - 0.57722 * in2
+	if(is.null(mul)) {
+		mumat <- as.matrix(rep(1, dim(xdat)[1]))
+		muinit <- in1
+	}
+	else {
+		z$trans <- T
+		mumat <- cbind(rep(1, dim(xdat)[1]), ydat[, mul])
+		muinit <- c(in1, rep(0, length(mul)))
+	}
+	if(is.null(sigl)) {
+		sigmat <- as.matrix(rep(1, dim(xdat)[1]))
+		siginit <- in2
+	}
+	else {
+		z$trans <- T
+		sigmat <- cbind(rep(1, dim(xdat)[1]), ydat[, sigl])
+		siginit <- c(in2, rep(0, length(sigl)))
+	}
+	if(is.null(shl)) {
+		shmat <- as.matrix(rep(1, dim(xdat)[1]))
+		shinit <- 0.1
+	}
+	else {
+		z$trans <- T
+		shmat <- cbind(rep(1, dim(xdat)[1]), ydat[, shl])
+		shinit <- c(0.1, rep(0, length(shl)))
+	}
+	init <- c(muinit, siginit, shinit)
+	assign("xdat", xdat, frame = 1)
+	assign("mumat", mumat, frame = 1)
+	assign("mul", mul, frame = 1)
+	assign("mulink", mulink, frame = 1)
+	assign("sigmat", sigmat, frame = 1)
+	assign("sigl", sigl, frame = 1)
+	assign("siglink", siglink, frame = 1)
+	assign("shmat", shmat, frame = 1)
+	assign("shl", shl, frame = 1)
+	assign("shlink", shlink, frame = 1)
+	z$model <- list(mul, sigl, shl)
+	z$link <- deparse(substitute(c(mulink, siglink, shlink)))
+	x <- nlmin(rlarg.lik, init, max.fcal = 200, max.iter = 150, print = 0)
+	z$conv <- x$converged
+	z$nllh <- rlarg.lik(x$x)
+	h <- hess(rlarg.lik, x$x)
+	z$data <- xdat
+	if(z$trans) {
+		for(i in 1:r)
+			z$data[, i] <-  - log((1 + (as.vector(xi) * (xdat[, i] - 
+				as.vector(mu)))/as.vector(sc))^(-1/as.vector(xi
+				)))
+	}
+	z$mle <- x$x
+	z$se <- sqrt(diag(h))
+	z$cov <- h
+	z$vals <- cbind(mu, sc, xi)
+	z$r <- r
+	if(z$trans)
+		print(z[c(2, 3)])
+	print(z[4])
+	if(z$conv)
+		print(z[c(5, 7, 8)])
+	invisible(z)
+}
+"rlarg.lik"<-
+function(a)
+{
+#
+# ancillary routine for rlarg.fit
+# calculates neg log lik
+#
+	xdatu <- as.matrix(xdatu)
+	npmu <- length(mul) + 1
+	mu <- mulink(mumat %*% (a[1:npmu]))
+	npsc <- length(sigl) + 1
+	sc <- siglink(sigmat %*% (a[seq(npmu + 1, length = npsc)]))
+	npsh <- length(shl) + 1
+	xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
+	assign("mu", mu, frame = 1)
+	assign("sc", sc, frame = 1)
+	assign("xi", xi, frame = 1)
+	l <- 0
+	nobs <- 1
+	for(i in 1:dim(xdatu)[1]) {
+		u <- min(xdatu[i,  ], na.rm = T)
+		if(min(1 + ((xi[i] * (u - mu[i]))/sc[i])) < 0) {
+			l <- 10^6
+		}
+		else {
+			y <- (xdatu[i, !is.na(xdatu[i,  ])] - mu[i])/sc[i]
+			y <- 1 + xi[i] * y
+			if(min(y) <= 0)
+				l <- 10^6
+			else l <- l + length(xdatu[i,  ]) * log(sc[i]) + sum(
+				  log(y)) * (1/xi[i] + 1) + ((1 + (xi[i] * (u - 
+				  mu[i]))/sc[i])^(-1/xi[i]))
+		}
+	}
+	l
+}
+"rlarg.pp"<-
+function(a, dat, k)
+{
+#
+# ancillary function
+# calculates probability plot in r largest model
+#
+	da <- dat[!is.na(dat[, k]), k]
+	plot((1:length(da))/length(da), rlargf(a, sort(da), k), xlab = "", ylab
+		 = "")
+	title(paste("k=", k, sep = ""), cex = 0.7)
+	abline(0, 1, col = 4)
+}
+"rlarg.qq"<-
+function(a, dat, k)
+{
+#
+# ancillary function
+# calculates quantile plot in r largest model
+#
+	da <- dat[!is.na(dat[, k]), k]
+	plot(rlargq(a, 1 - (1:length(da)/(length(da) + 1)), k, da), sort(da), 
+		xlab = "", ylab = "")
+	title(paste("k=", k, sep = ""), cex = 0.7)
+	abline(0, 1, col = 4)
+}
+"rlargf"<-
+function(a, z, k)
+{
+#
+# ancillary function
+# calculates dist fnc in r largest model
+#
+	eps <- 10^(-6)
+	res <- NULL
+	if(abs(a[3]) < eps)
+		tau <- exp( - (z - a[1])/a[2])
+	else tau <- (1 + (a[3] * (z - a[1]))/a[2])^(-1/a[3])
+	for(i in 1:length(tau)) {
+		if(is.na(tau[i]))
+			res[i] <- 1
+		else res[i] <- exp( - tau[i]) * sum(tau[i]^(0:(k - 1))/gamma(1:(
+				k)))
+	}
+	res
+}
+"rlargq"<-
+function(a, p, k, dat)
+{
+#
+# ancillary routine 
+# for finding quantiles in r largest model
+	res <- NULL
+	for(i in 1:length(p)) {
+		inter <- c(min(dat) - 1, max(dat) + 1)
+		res[i] <- uniroot(rlargq2, inter, a = a, kk = k, p = p[i])$root
+	}
+	res
+}
+"rlargq2"<-
+function(x, a, kk, p)
+{
+#
+# ancillary routine
+# for finding quantiles in r largest model
+#
+	res <- rlargf(a, x, kk) - (1 - p)
+	res
+}
+"sim.max"<-
+function(n, nobs, fun, ...)
+{
+#
+# simulates block maximum data
+#
+	x <- NULL
+	y <- fun(n * nobs, ...)
+	for(j in 1:n) {
+		x <- c(x, max(y[((j - 1) * nobs + 1):(j * nobs)]))
+	}
+	x
+}
