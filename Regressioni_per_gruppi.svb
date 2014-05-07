@@ -1,0 +1,472 @@
+'#Reference {C9E29017-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29036-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2902B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29029-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29028-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29024-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2902C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29010-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29020-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29005-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29006-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29008-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900F-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29012-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29015-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29016-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29021-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29018-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29019-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901A-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901D-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29014-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29013-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29011-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900D-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900A-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29009-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29004-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29007-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900E-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29001-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29003-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29002-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+Sub Main
+
+Dim ADS As Spreadsheet, Sel As New Spreadsheet, rs As Spreadsheet, rs1 As Spreadsheet, rs2 As Spreadsheet, rs3 As Spreadsheet, rs4 As Spreadsheet
+Dim n1 As Integer, n2 As Integer,n3 As Integer,n4 As Integer, gruppi As Integer, nprima As Integer, conta As Long, method As Integer
+Dim valprima As Variant
+Dim mean(2) As Double, RiepGruppi() As Variant, RiepAssieme (11 To 12) As Variant, RiepComune (12) As Variant, meant(2) As Double, RiepTotale(12) As Variant
+Dim Fa As Double, Fb As Double, pa As Double, pb As Double
+Dim Func As String
+Dim gp As Graph
+Dim sc As Layout2D
+Dim fn As Function2D
+Dim pl As Plot2D
+
+
+Set ADS = SelectSpreadsheetDialog(False)
+If VarPtr(ADS) = 0 Then End
+' Selezione delle variabili da analizzare
+If SelectVariables3(ADS,"Seleziona le variabili",1,1,VD,NVD,"Var. dipendente:",1,1,VI,NVI,"Var. indipendente:",1,1,VG,NVG,"Var. raggruppamento:") = 0 Then
+		End
+End If
+method = DisplayButtonBox("Seleziona il tipo di regressione","OLS|OLS inverso|OLS bisezionato|Ortogonale|RMA")
+
+
+
+'Sel.Visible=True
+Sel.VariableName(1) = "X"
+Sel.VariableName(2) = "Y"
+Sel.VariableName(3) = "G"
+
+For n= 1 To ADS.NumberOfCases
+	If ADS.CaseQualified(n)= False Or ADS.Value(n,VI) = -9999 Or ADS.Value(n,VD) = -9999 Or ADS.Value(n,VG) = -9999 Then conta = conta +1
+Next
+
+Sel.AddCases(10,ADS.NumberOfCases-10-conta)
+
+conta = 0
+
+For n= 1 To ADS.NumberOfCases
+	If ADS.CaseQualified(n)= False Or ADS.Value(n,VI) = -9999 Or ADS.Value(n,VD) = -9999 Or ADS.Value(n,VG) = -9999 Then
+		conta = conta +1
+	Else
+		Sel.Value(n-conta,1)=ADS.Value(n,VI)
+		Sel.Value(n-conta,2)=ADS.Value(n,VD)
+		Sel.Value(n-conta,3)=ADS.Text(n,VG)
+	End If
+Next
+
+
+Sel.SortData(3)
+
+valprima = Sel.Text(1,3)
+nprima=1
+Set rs2 = Spreadsheets.New
+rs2.VariableName(1)="X"
+rs2.VariableName(2)="Y"
+
+Select Case method
+	Case 1
+	Set rs4 = Spreadsheets.New("OLS nei singoli gruppi")
+	Case 2
+	Set rs4 = Spreadsheets.New("OLS inverso nei singoli gruppi")
+	Case 3
+	Set rs4 = Spreadsheets.New("OLS bisezionato nei singoli gruppi")
+	Case 4
+	Set rs4 = Spreadsheets.New("Ortogonale nei singoli gruppi")
+	Case 5
+	Set rs4 = Spreadsheets.New("RMA nei singoli gruppi")
+	Case Else
+	Stop
+End Select
+
+rs4.DeleteVariables (10,10)
+rs4.VariableName(1)="alfa"
+rs4.VariableName(2)="beta"
+rs4.VariableName(3)="var beta"
+rs4.VariableName(4)="inf beta"
+rs4.VariableName(5)="sup beta"
+rs4.VariableName(6)="var alfa"
+rs4.VariableName(7)="inf alfa"
+rs4.VariableName(8)="sup alfa"
+rs4.VariableName(9)="group"
+rs4.Visible=True
+
+
+For n1 = 1 To Sel.NumberOfCases
+	If valprima = Sel.Text(n1,3) Then
+		mean(1)=mean(1)+ CDbl(Sel.Value(n1,1))
+		mean(2)=mean(2)+ CDbl(Sel.Value(n1,2))
+		n2=n2 + 1
+		If n2 > 10 Then rs2.AddCases(n2-1,1)
+		rs2.Value(n2,1)= CDbl(Sel.Value(n1,1))
+		rs2.Value(n2,2)= CDbl(Sel.Value(n1,2))
+	Else
+		gruppi=gruppi+1
+		ReDim Preserve RiepGruppi(12,gruppi)
+		RiepGruppi(1,gruppi)=Sel.Text(n1-1,3)
+		RiepGruppi(2,gruppi)=n1-nprima
+		RiepGruppi(3,gruppi)=mean(1)/RiepGruppi(2,gruppi)
+		RiepGruppi(4,gruppi)=mean(2)/RiepGruppi(2,gruppi)
+		mean(1)=CDbl(Sel.Value(n1,1))
+		mean(2)=CDbl(Sel.Value(n1,2))
+		nprima=n1
+		n2=1
+		O_Regr(rs2)
+		For n3 = 1 To Spreadsheets.Count
+			If Spreadsheets.Item(n3).Name = "Differenti rette di regressione" Then
+				Set rs3 = Spreadsheets.Item(n3)
+				rs3.Cases(method).Select
+				rs3.Copy()
+				rs4.Case(gruppi).Select
+				rs4.Paste()
+				rs4.Value(gruppi,9)=Sel.Text(n1-1,3)
+				Spreadsheets.Item(n3).Close
+			End If
+		Next
+		Set rs2 = Spreadsheets.New
+		rs2.Value(n2,1)= CDbl(Sel.Value(n1,1))
+		rs2.Value(n2,2)= CDbl(Sel.Value(n1,2))
+	End If
+	valprima=Sel.Text(n1,3)
+	meant(1)=meant(1)+ CDbl(Sel.Value(n1,1))
+	meant(2)=meant(2)+ CDbl(Sel.Value(n1,2))
+Next n1
+
+n2=0
+
+gruppi=gruppi+1
+ReDim Preserve RiepGruppi(12,gruppi)
+RiepGruppi(1,gruppi)=Sel.Text(n1-1,3)
+RiepGruppi(2,gruppi)=n1-nprima
+RiepGruppi(3,gruppi)=mean(1)/RiepGruppi(2,gruppi)
+RiepGruppi(4,gruppi)=mean(2)/RiepGruppi(2,gruppi)
+nprima=n1
+n2=1
+O_Regr(rs2)
+For n3 = 1 To Spreadsheets.Count
+	If Spreadsheets.Item(n3).Name = "Differenti rette di regressione" Then
+		Set rs3 = Spreadsheets.Item(n3)
+		rs3.Cases(method).Select
+		rs3.Copy()
+		rs4.Case(gruppi).Select
+		rs4.Paste()
+		rs4.Value(gruppi,9)=Sel.Text(n1-1,3)
+		Spreadsheets.Item(n3).Close
+	End If
+Next
+
+
+
+RiepTotale(2)=Sel.NumberOfCases
+RiepTotale(3)=meant(1)/Sel.NumberOfCases
+RiepTotale(4)=meant(2)/Sel.NumberOfCases
+n3=0
+
+For n1= 1 To gruppi
+	For n2 = 1 To RiepGruppi(2,n1)
+		n3=n3+1
+		RiepGruppi(5,n1)=RiepGruppi(5,n1)+(CDbl(Sel.Value(n3,1))-RiepGruppi(3,n1))^2
+		RiepTotale(5)=RiepTotale(5)+(CDbl(Sel.Value(n3,1))-RiepTotale(3))^2
+		RiepGruppi(6,n1)=RiepGruppi(6,n1)+(CDbl(Sel.Value(n3,1))-RiepGruppi(3,n1))*(CDbl(Sel.Value(n3,2))-RiepGruppi(4,n1))
+		RiepTotale(6)=RiepTotale(6)+(CDbl(Sel.Value(n3,1))-RiepTotale(3))*(CDbl(Sel.Value(n3,2)-RiepTotale(4)))
+		RiepGruppi(7,n1)=RiepGruppi(7,n1)+(CDbl(Sel.Value(n3,2))-RiepGruppi(4,n1))^2
+		RiepTotale(7)=RiepTotale(7)+(CDbl(Sel.Value(n3,2))-RiepTotale(4))^2
+	Next n2
+	RiepComune(5)=RiepComune(5)+RiepGruppi(5,n1)
+	RiepComune(6)=RiepComune(6)+RiepGruppi(6,n1)
+	RiepComune(7)=RiepComune(7)+RiepGruppi(7,n1)
+	RiepGruppi(8,n1)=RiepGruppi(6,n1)/RiepGruppi(5,n1)
+	RiepGruppi(9,n1)=RiepGruppi(4,n1)-RiepGruppi(8,n1)*RiepGruppi(3,n1)
+	RiepGruppi(10,n1)=RiepGruppi(8,n1)*RiepGruppi(6,n1)
+	RiepGruppi(11,n1)=RiepGruppi(7,n1)-RiepGruppi(6,n1)^2/RiepGruppi(5,n1)
+	RiepAssieme(11)=RiepAssieme(11)+RiepGruppi(11,n1)
+	RiepGruppi(12,n1)=RiepGruppi(2,n1)-2
+	RiepAssieme(12)=RiepAssieme(12)+RiepGruppi(12,n1)
+Next n1
+RiepComune(8)=RiepComune(6)/RiepComune(5)
+RiepTotale(8)=RiepTotale(6)/RiepTotale(5)
+RiepTotale(9)=RiepTotale(4)-RiepTotale(8)*RiepTotale(3)
+RiepComune(10)=RiepComune(8)/RiepComune(6)
+RiepTotale(10)=RiepTotale(8)/RiepTotale(6)
+RiepComune(11)=RiepComune(7)-RiepComune(6)^2/RiepComune(5)
+RiepTotale(11)=RiepTotale(7)-RiepTotale(6)^2/RiepTotale(5)
+RiepComune(12)=Sel.NumberOfCases-(gruppi+1)
+RiepTotale(12)=Sel.NumberOfCases-2
+
+Fb=((RiepComune(11)-RiepAssieme(11))/(RiepComune(12)-RiepAssieme(12)))/(RiepComune(11)/RiepAssieme(12))
+pb=FDistr(Fb,gruppi-1,RiepAssieme(12))
+Fa=((RiepTotale(11)-RiepComune(11))/(RiepTotale(12)-RiepComune(12)))/(RiepComune(11)/RiepComune(12))
+pa=FDistr(Fa,gruppi-1,RiepComune(12))
+
+Set gp = Graphs.New
+Set sc = gp.GraphObject.CreateContent (scg2DGraph)
+gp.Titles.Add scgSubTitle, " "
+Set rs = Spreadsheets.New ("Riepilogo rette di regressione")
+rs.Header.Value = "Regressioni per gruppi"
+rs.AddVariables("p",10,4)
+If gruppi < 10 Then rs.DeleteCases (gruppi+1,10) Else rs.AddCases (10,gruppi-10)
+rs.VariableName(1)="Gruppo"
+rs.VariableName(2)="Numero"
+rs.VariableName(3)="Media X"
+rs.VariableName(4)="Media Y"
+rs.VariableName(5)="x2"
+rs.VariableName(6)="xy"
+rs.VariableName(7)="y2"
+rs.VariableName(8)="b"
+rs.VariableName(9)="a"
+rs.VariableName(10)="ss regr"
+rs.VariableName(11)="ss resid"
+rs.VariableName(12)="Gl"
+rs.VariableName(13)="p"
+rs.VariableName(14)="F"
+n3=0
+
+For n1 = 1 To gruppi
+	Set pl=sc.Plots.Add (scgScatterPlot,RiepGruppi(2,n1))
+	For n2= 1 To RiepGruppi(2,n1)
+		n3=n3+1
+		pl.Variable(1).Value(n2) = CDbl(Sel.Value(n3,1))
+		pl.Variable(2).Value(n2) = CDbl(Sel.Value(n3,2))
+		For n4 = 1 To 12
+			rs.Value(n1,n4)=RiepGruppi(n4,n1)
+		Next n4
+	Next n2
+	Set fn = sc.Functions.Add
+	Func = "Gruppo "&CStr(RiepGruppi(1,n1))&": y = "&CStr(RiepGruppi(9,n1))&" + "&CStr(RiepGruppi(8,n1))&"*x"
+	fn.Function	= Func
+	gp.Titles.Item(1).AppendCustomFunctionLineSymbol(n1)
+	gp.Titles.Item(1).AppendCustomFunctionEquation(n1)
+	gp.Titles.Item(1).AppendText Chr(13)
+	sc.Plots.Item(n1).PlotName=ADS.VariableName(VG)
+	sc.Plots.Item(n1).Variable(1).VariableName=ADS.VariableName(VI)
+	sc.Plots.Item(n1).Variable(2).VariableName=ADS.VariableName(VD)
+Next n1
+
+Set fn = sc.Functions.Add
+Func = "Totale : y = "&CStr(RiepTotale(9))&" + "&CStr(RiepTotale(8))&"*x"
+fn.Function	= Func
+gp.Titles.Item(1).AppendCustomFunctionLineSymbol(n1)
+gp.Titles.Item(1).AppendCustomFunctionEquation(n1)
+gp.Titles.Item(1).AppendText Chr(13)
+
+
+
+rs.AddCases (gruppi,3)
+rs.Value(gruppi+1,1)="Sommata"
+rs.Value(gruppi+1,11)=RiepAssieme(11)
+rs.Value(gruppi+1,12)=RiepAssieme(12)
+rs.Value(gruppi+2,1)="Comune"
+rs.Value(gruppi+2,5)=RiepComune(5)
+rs.Value(gruppi+2,6)=RiepComune(6)
+rs.Value(gruppi+2,7)=RiepComune(7)
+rs.Value(gruppi+2,10)=RiepComune(10)
+rs.Value(gruppi+2,11)=RiepComune(11)
+rs.Value(gruppi+2,12)=RiepComune(12)
+rs.Value(gruppi+2,13)=pb
+rs.Value(gruppi+2,14)=Fb
+rs.Value(gruppi+3,1)="Unica"
+For n4 = 2 To 12
+	rs.Value(gruppi+3,n4)=RiepTotale(n4)
+Next n4
+rs.Value(gruppi+3,13)=pa
+rs.Value(gruppi+3,14)=Fa
+
+gp.Titles.Add (scgFootnote, ADS.VariableName(VI))
+gp.Titles.Add (scgLeftTitle, ADS.VariableName (VD))
+gp.Titles.Add (scgMainTitle, "Differenti rette di regressione")
+gp.Visible =True
+
+rs.AutoFitCase
+rs.EntireRange.AutoFit
+rs.Visible = True
+
+End Sub
+
+Sub O_Regr(Dati As Spreadsheet)
+
+Dim rs As New Spreadsheet
+Dim SXX As Double, SYY As Double, SXY As Double
+Dim MX() As Double, SDX() As Double, MINX () As Double, MAXX() As Double, NX() As Long
+Dim MY() As Double, SDY() As Double, MINY () As Double, MAXY() As Double, NY() As Long
+Dim gamma1 As Double, gamma2 As Double
+Dim Data() As Double
+Dim zero() As Double
+Dim Beta (1 To 5) As Double
+Dim Alfa (1 To 5) As Double
+Dim Name (1 To 5) As String
+Dim Gamma (1 To 2, 5) As Double
+Dim varbeta (1 To 5) As Double, cvarbeta As Double
+Dim varalfa (1 To 5) As Double
+Dim ncasi As Long, conta As Long
+Dim gp As Graph
+Dim sc As Layout2D
+Dim fn As Function2D
+Dim pl As Plot2D
+Dim Res As Spreadsheet
+Dim n As Integer, contat As Integer
+Dim Func As String
+Dim legend As String
+Dim mediax As Double, mediay As Double
+
+
+ncasi=Dati.NumberOfCases
+
+
+ReDim Data (1 To 2, 1 To ncasi)
+ReDim zero (1 To 2, 1 To ncasi)
+
+' Si crea una matrice con i dati da correlare andando ad escludere i casi con valori mancanti
+
+For n = 1 To ncasi
+	Data(1,n)=Dati.Value(n,1)
+	Data(2,n)=Dati.Value(n,2)
+Next n
+
+Dati.Statistics(1,MX,SDX,MINX,MAXX,NX)
+Dati.Statistics(2,MY,SDY,MINY,MAXY,NY)
+
+mediax=MX(1)
+mediay=MY(1)
+
+' Calcolo della media dei casi senza valori mancanti
+
+For n = 1 To ncasi
+	zero(1,n) = Data(1,n)-mediax
+	zero(2,n) = Data(2,n)-mediay
+	SXX=SXX + (Data(1,n)-mediax)^2
+	SYY=SYY + (Data(2,n)-mediay)^2
+	SXY=SXY + (Data(1,n)-mediax)*(Data(2,n)-mediay)
+Next n
+
+'Calcolo delle varianze necessarie correlazioni e degli scarti di ogni valore dalla media
+
+Beta(1) = SXY/SXX
+Beta(2) = SYY/SXY
+Beta(3) = (Beta(1)+Beta(2))^-1*(Beta(1)*Beta(2)-1+Sqr((1+Beta(1)^2)*(1+Beta(2)^2)))
+Beta(4) = ((Beta(2)-1/Beta(1))+Sgn(SXY)*Sqr(4+(Beta(2)-1/Beta(1))^2))/2
+Beta(5) = Sgn(SXY)*Sqr(Beta(1)*Beta(2))
+
+' Calcolo delle pendenze delle varie curve di regressione
+
+Name(1) = "OLS"
+Name(2) = "OLS inverso"
+Name(3) = "OLS bisezionato"
+Name(4) = "Ortogonale"
+Name(5) = "RMA"
+
+' Assegnazione dei nomi delle varie curve di regressione
+
+For n = 1 To 5
+	Alfa(n) = mediay - Beta(n)*mediax
+Next n
+
+' Calcolo delle intercette
+
+For n = 1 To ncasi
+	varbeta(1) = varbeta(1) + (zero(1,n)*(zero(2,n)-Beta(1)*zero(1,n)))^2
+	varbeta(2) = varbeta(2) + (zero(2,n)*(zero(2,n)-Beta(2)*zero(1,n)))^2
+	cvarbeta = cvarbeta+zero(1,n)*zero(2,n)*(zero(2,n)-Beta(1)*zero(1,n))*(zero(2,n)-Beta(2)*zero(1,n))
+Next n
+
+varbeta(1)=varbeta(1)/SXX^2
+varbeta(2)=varbeta(2)/SXY^2
+cvarbeta=1/(Beta(1)*SXX^2)*cvarbeta
+varbeta(3)=Beta(3)^2/(Beta(1)+Beta(2))^2/(1+Beta(1)^2)/(1+Beta(2)^2)*((1+Beta(2)^2)^2*varbeta(1)+2*(1+Beta(1)^2)*(1+Beta(2)^2)*cvarbeta+(1+Beta(1)^2)^2*varbeta(2))
+varbeta(4)=Beta(4)^2/(4*Beta(1)^2+(Beta(2)*Beta(1)-1)^2)*(Beta(1)^-2*varbeta(1)+2*cvarbeta+Beta(1)^2*varbeta(2))
+varbeta(5)=(Beta(2)/Beta(1)*varbeta(1)+2*cvarbeta+Beta(1)/Beta(2)*varbeta(2))/4
+
+' Calcolo delle varianze dei coefficenti angolari
+
+gamma1 = Beta(3)/((Beta(1)+Beta(2))*Sqr((1+Beta(1)^2)*(1+Beta(2)^2)))
+gamma2 = Beta(4)/Sqr(4*Beta(1)^2+(Beta(1)*Beta(2)-1)^2)
+
+Gamma(1,1) = 1
+Gamma(1,2) = 0
+Gamma(1,3) = gamma1*(1+Beta(2)^2)
+Gamma(1,4) = 1/gamma2*Abs(Beta(1))
+Gamma(1,5) = Sqr(Beta(2)/Beta(1))/2
+
+Gamma(2,1) = 0
+Gamma(2,2) = 1
+Gamma(2,3) = gamma1*(1+Beta(1)^2)
+Gamma(2,4) = Abs(Beta(1))*gamma2
+Gamma(2,5) = Sqr(Beta(1)/Beta(2))/2
+
+For n = 1 To ncasi
+	For contat = 1 To 5
+	varalfa(contat) = varalfa(contat) + (zero(2,n)-zero(1,n)*Beta(contat)-ncasi*mediax*(Gamma(1,conta)/SXX*zero(1,n)*(zero(2,n)-zero(1,n)*Beta(1))+Gamma(2,conta)/SXY*zero(2,n)*(zero(2,n)-Beta(2)*zero(1,n))))^2
+	Next contat
+Next n
+
+For n = 1 To 5
+	varalfa(n) = varalfa(n)/ncasi^2
+Next n
+
+' Calcolo delle varianze dei coefficenti angolari
+
+Set Res = Spreadsheets.New ("Differenti rette di regressione")
+Res.Header.Value = "Pendenze e intercette delle diverse curve di regressione y = alfa + beta * x"
+Res.DeleteCases 6,rs.Cases.Count
+Res.DeleteVariables 9,rs.Variables.Count
+Res.VariableName(1)="alfa"
+Res.VariableName(2)="beta"
+Res.VariableName(3)="var beta"
+Res.VariableName(4)="inf beta"
+Res.VariableName(5)="sup beta"
+Res.VariableName(6)="var alfa"
+Res.VariableName(7)="inf alfa"
+Res.VariableName(8)="sup alfa"
+
+
+For n = 1 To 5
+	Res.CaseName(n) = Name(n)
+	Res.Value (n,1) = Alfa (n)
+	Res.Value (n,2) = Beta (n)
+	Res.Value (n,3) = Sqr(varbeta (n))
+	Res.Value (n,4) = Beta(n)-1.96*Sqr(varbeta (n))
+	Res.Value (n,5) = Beta(n)+1.96*Sqr(varbeta (n))
+	Res.Value (n,6) = Sqr(varalfa (n))
+	Res.Value (n,7) = Alfa(n)-1.96*Sqr(varalfa (n))
+	Res.Value (n,8) = Alfa(n)+1.96*Sqr(varalfa (n))
+Next n
+Res.AutoFitCase
+Res.EntireRange.AutoFit
+Res.Visible = True
+
+' Creazione della tabella
+
+End Sub
+
+'STATISTICA MACRO FILE VERSION 4
+'BEGINPROPERTIES
+'NAME=Regressioni per gruppi
+'DESCRIPTION=Macro registrata il 9/24/2003
+'LANGUAGE=0
+'ENDPROPERTIES

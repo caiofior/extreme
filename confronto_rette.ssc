@@ -1,0 +1,141 @@
+Risultati <- comp.regr(Result$Specie,Result$Diameter,Result$Area)
+
+"comp.regr" <- function(n,x,y)
+{
+data <- data.frame(n,x,y)
+gruppi <<- aggregate(data[,2], by=data[,1], FUN =count.rows)
+# Nome gruppi e conteggio valori
+gruppi <<- cbind(gruppi,aggregate(data[,2], by=data[,1], FUN =mean)[2])
+# Medie variabile x per gruppi
+gruppi <<- cbind(gruppi, aggregate(data[,3], by=data[,1], FUN =mean)[2])
+# Medie variabile y per gruppi
+for (i in 1:length(gruppi[,1]))
+{
+gruppi[i,5] <<- sum((data[,2][data[,1]==as.character(gruppi[i,1])]-gruppi[,3])^2)
+# Calcolo somma quadrato scarti dalla media per gruppi x
+gruppi[i,6] <<- sum((data[,2][data[,1]==as.character(gruppi[i,1])]-gruppi[i,3])*(data[,3][data[,1]==as.character(gruppi[i,1])]-gruppi[i,4]))
+# Calcolo somma quadrato scarti dalla media delle due variabili per gruppi
+gruppi[i,7] <<- sum((data[,3][data[,1]==as.character(gruppi[i,1])]-gruppi[i,4])^2)
+# Calcolo somma quadrato scarti dalla media per gruppi y
+
+gruppi[i,8] <<- gruppi[i,6]/gruppi[i,5]
+# Calcolo coefficenti angolari singole rette
+}
+gruppi[,9] <<- gruppi[,4]-gruppi[,8]*gruppi[,3]
+# Calcolo intercette per singole rette
+gruppi[,10] <<- gruppi[,8]*gruppi[,6]
+# Calcolo SS regr per singole rette
+gruppi[,11] <<- gruppi[,7]-gruppi[,6]^2/gruppi[,5]
+#Calcolo SS resid per singole rette
+gruppi[,12] <<- gruppi[,2]-2
+# Calcolo gradi libertà singole rette
+gruppi[,13] <<- NA
+gruppi[,14] <<- NA
+guiModify( "factor", Name = "gruppi$Group", NewName = "X1")
+guiModify( "integer", Name = "gruppi$x",	NewName = "X2")
+guiModify( "double", Name = "gruppi$x1",	NewName = "X3")
+guiModify( "double", Name = "gruppi$x11", NewName = "X4")
+
+
+Comune <- data.frame("Comune")
+Comune[1] <- "Comune"
+for (i in 2:4) Comune[i]<-NA
+Comune[5] <- sum(gruppi[,5])
+# Calcolo somma quadrato degli scarti dei gruppi in x
+Comune[6] <- sum(gruppi[,6])
+# Calcolo somma quadrato degli scarti dei gruppi in nelle due variabili
+Comune[7] <- sum(gruppi[,7])
+# Calcolo somma quadrato degli scarti dei gruppi in y
+Comune[8] <- Comune[6]/Comune[5]
+# Calcolo coefficente angolare dei gruppi
+Comune[9] <- NA
+Comune[10] <- Comune[8]/Comune[6]
+# Calcolo SS regr dei gruppi
+Comune[11] <- Comune[7]-Comune[6]^2/Comune[5]
+#Calcolo SS resid dei gruppi
+Comune[12] <- count.rows(Result)-count.rows(gruppi)-1
+Comune[13] <- NA
+Comune[14] <- NA
+
+Totale <- data.frame("Totale")
+Totale[1] <- "Totale"
+Totale[2] <- count.rows(Result)
+# Numerosità totale popolazione
+Totale[3] <- mean(data[,2])
+# Media totale x
+Totale[4] <- mean(data[,3])
+#Media totale y
+Totale[5] <- sum((-Totale[3]+data[,2])^2)
+# Calcolo somma quadrato scarti dalla media x
+Totale[6] <- sum((-Totale[3]+data[,2])*(-Totale[4]+data[,3]))
+# Calcolo somma quadrato scarti dalla media delle due variabili
+Totale[7] <- sum((-Totale[4]+data[,3])^2)
+# Calcolo somma quadrato scarti dalla media y
+Totale[8] <- Totale[6]/Totale[5]
+# Calcolo coefficenti angolari retta unica
+Totale[9] <- Totale[4]-Totale[8]*Totale[3]
+# Calcolo intercette retta unica
+Totale[10] <- Totale[8]*Totale[6]
+# Calcolo SS regr retta unica
+Totale[11] <- Totale[7]-Totale[6]^2/Totale[5]
+#Calcolo SS resid retta unica
+Totale[12] <- Totale[2]-2
+# Calcolo gradi libertà retta unica
+Totale[13] <- ((Totale[11]-Comune[11])/(Totale[12]-Comune[12]))/(Comune[11]/Comune[12])
+# Calcolo valore di F
+Totale[14] <- df(min(Totale[13]),count.rows(gruppi)-1,min(Comune[12]))
+# Calcolo probabilità
+
+Assieme <- data.frame("Assieme")
+Assieme[1] <- "Assieme"
+for (i in 2:10) Assieme[i] <- NA
+Assieme[11] <- sum(gruppi[,11])
+# Calcolo SS resid comune
+Assieme[12] <- sum(gruppi[,12])
+# Calcolo GL comune
+Assieme[13] <- ((Comune[11]-Assieme[11])/(Comune[12]-Assieme[12]))/(Comune[11]/Assieme[12])
+# Calcolo valore di F
+Assieme[14] <- df(min(Assieme[13]),count.rows(gruppi)-1,min(Assieme[12]))
+# Calcolo probabilità
+
+Risultati <<- rbind(gruppi,Comune,Assieme,Totale)
+
+# Unione dati diverse tabelle
+guiModify( "factor", Name = "Risultati$X1", NewName = "Group")
+guiModify( "integer", Name = "Risultati$X2",	NewName = "Number")
+guiModify( "double", Name = "Risultati$X3", NewName = "Mean.X")
+guiModify( "double", Name = "Risultati$X4", NewName = "Mean.Y")
+guiModify( "double", Name = "Risultati$X5", NewName = "SSR.X")
+guiModify( "double", Name = "Risultati$X6", NewName = "SSR.XY")
+guiModify( "double", Name = "Risultati$X7", NewName = "SSR.Y")
+guiModify( "double", Name = "Risultati$X8",	NewName = "b")
+guiModify( "double", Name = "Risultati$X9",	NewName = "a")
+guiModify( "double", Name = "Risultati$X10",	NewName = "SSregr")
+guiModify( "double", Name = "Risultati$X11",	NewName = "SSresd")
+guiModify( "double", Name = "Risultati$X12",	NewName = "GL")
+guiModify( "double", Name = "Risultati$X13",	NewName = "F")
+guiModify( "double", Name = "Risultati$X14",	NewName = "p")
+# Rinominare tabelle
+
+plot(data[,2], data[,3], type="n")
+#traccia assi del grafico senza metterci punti
+for (i in 1:count.rows(gruppi)){
+#Crea i diversi grafici
+points(data[,2][data[,1]==as.character(gruppi[i,1])], data[,3][data[,1]==as.character(gruppi[i,1])], pch=i)
+# Crea grafico e sovrappone ad altri
+abline(gruppi[i,9], gruppi[i,8], lty = i)
+# Aggiunge linea di tendenza e sovrappone ad altri
+}
+
+key(text = list(as.character(gruppi[,1])),
+	lines=list(lty=1:count.rows(gruppi)),
+	points=list(pch = 1:count.rows(gruppi)))
+# Aggiunge leggenda
+
+guiEval(remove('gruppi',where=1), 'gruppi', removal=T)
+# Rimuove tabella gruppi
+print("Risultati analisi di regressione funzione del tipo y=a+b*x")
+print(Risultati)
+
+return(Risultati)
+}

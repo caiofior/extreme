@@ -1,0 +1,52 @@
+Option Base 1
+Option Explicit
+
+Const SPREADSHEET_MENU As Integer = 20
+'The following example demonstrates dynamically adding a new menu to the spreadsheet menu bar,
+'along with adding and customizing menu options.  After running this macro, bring a spreadsheet
+'to the top of STATISTICA and you will see that a menu named "Favorite Spreadsheet Commands" has
+'been added before the "File" menu.
+
+Sub Main
+	Dim SpreadsheetMenuBar As CommandBar		'the spreadsheet menu bar
+	Dim NewSpeadsheetMenu As CommandBarItem	'a specific menu on the menu bar
+	'get the spreadsheet menu bar
+
+	Set SpreadsheetMenuBar = CommandBarOptions.CommandBars(scBarTypeMenuBar).Item(SPREADSHEET_MENU)
+	
+
+
+	'insert the a blank menu onto the macro menu bar
+	Set NewSpeadsheetMenu = SpreadsheetMenuBar.InsertPopupMenu(1,"&Regressioni")
+	'begin adding items to the new menu
+	If (Dir(CurDir & "\Regressioni.svb")  <> "")Then
+		NewSpeadsheetMenu.Items.InsertMacroButton(1, _
+				CurDir & "\Regressioni.svb")
+		NewSpeadsheetMenu.Items(1).Caption = "&Differenti metodi di regressione"
+	End If
+	If (Dir(CurDir & "\Regressioni per gruppi.svb")  <> "")Then
+		NewSpeadsheetMenu.Items.InsertMacroButton(2, _
+				CurDir & "\Regressioni per gruppi.svb")
+		NewSpeadsheetMenu.Items(2).Caption = "Regressioni per &gruppi"
+	End If
+	If (Dir(CurDir & "\Power function.svb")  <> "")Then
+		NewSpeadsheetMenu.Items.InsertMacroButton(3, _
+				CurDir & "\Power function.svb")
+		NewSpeadsheetMenu.Items(3).Caption = "&Power fitting"
+	End If
+		If (Dir(CurDir & "\Grafici per gruppi.svb")  <> "")Then
+		NewSpeadsheetMenu.Items.InsertMacroButton(4, _
+				CurDir & "\Grafici per gruppi.svb")
+		NewSpeadsheetMenu.Items(4).Caption = "&Scatterplot per gruppi"
+	End If
+
+' CommandBarOptions.CommandBars(scBarTypeMenuBar).ResetAll
+
+End Sub
+
+'STATISTICA MACRO FILE VERSION 4
+'BEGINPROPERTIES
+'NAME=Aggiungi Menu
+'DESCRIPTION=
+'LANGUAGE=0
+'ENDPROPERTIES

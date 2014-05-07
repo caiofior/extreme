@@ -1,0 +1,367 @@
+'#Reference {C9E29017-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29036-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2902B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29029-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29028-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29024-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2902C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29010-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29020-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29005-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29006-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29008-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900F-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29012-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29015-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29016-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29021-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29018-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29019-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901A-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901D-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29014-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29013-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29011-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900D-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900A-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29009-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29004-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29007-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900E-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29001-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29003-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29002-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+Sub Main
+
+Dim nvar As Integer, n1 As Integer, n2 As Integer, selvar As Integer, ncas As Integer, ncat As Integer, conta As Integer, ngs As Integer
+Dim varlist () As String, valprima As Variant, gs As String
+Dim rs1 As Spreadsheet, rs2 As Spreadsheet, rs3 As Spreadsheet
+Dim mean (1 To 2) As Double, SXY As Double, SXX As Double, Beta As Double, alfa As Double
+Dim g As Graph
+Dim sc As Layout2D
+Dim pl As Plot2D
+Dim fn As Function2D
+
+	If Graphs.Count <> 0 Then
+		For i = 1 To Graphs.Count
+			gs = gs & "|" & Graphs.Item(i).Name
+		Next i
+	Else
+		MsgBox("Non ci sono grafici aperti, o sono all'interno di un workbook")
+		Stop
+	End If
+	gs = Mid(gs,2,Len(gs))
+	ngs = DisplayListBox("Seleziona il grafico dove c'è la serie d interpolare",gs,1)
+
+
+Set g = Graphs.Item(ngs)
+If g.GraphObject.TypeContent <> scg2DGraph Then End
+Set sc = g.GraphObject.Content
+nvar=CInt(sc.Plots.Count)
+If nvar < 1 Then End
+ReDim varlist (1 To nvar)
+For n1 = 1 To nvar
+	If sc.Plots.Item(n1).PlotName <> "" Then
+		varlist(n1) = CStr(sc.Plots.Item(n1).PlotName)
+	Else
+		varlist(n1) = CStr(n1)
+	End If
+Next n1
+
+
+Begin Dialog UserDialog 400,203,"Selezionare il plot da interpolare",.func
+	ComboBox 90,14,230,133,varlist(),.Sele
+	OKButton 90,161,90,21
+	CancelButton 200,161,110,21,.canc
+End Dialog
+
+Dim dlg As UserDialog
+Dialog dlg
+
+Do
+selvar =selvar+1
+Loop Until varlist(selvar) = CStr(dlg.sele)
+
+
+Set pl = sc.Plots.Item(selvar)
+ncas=CInt(pl.Variable(1).ValuesCount)
+nvar=CInt(pl.VariablesCount)
+ncat=CInt(sc.Category(1).VariablesCount)
+ReDim Preserve Data (1 To nvar, 1 To ncas)
+
+Set rs1 = Spreadsheets.New
+rs1.VariableName (1) = "X"
+rs1.VariableName (2) = "Y"
+If ncat >=1 Then rs1.VariableName (3) = "Cat 1"
+If ncat >=4 Then rs1.VariableName (4) = "Cat 2"
+rs1.Visible=True
+
+For n1 = 1 To ncas
+	If n1 > 10 Then rs1.AddCases(n1-1,1)
+	For n2 = 1 To nvar
+		If CStr(pl.Variable(n2).Value(n1)) <> CStr((pl.Variable(n2).Value(n1)) - 1) Then
+			rs1.Value(n1,n2) = pl.Variable(n2).Value(n1)
+		Else
+			rs1.Value(n1,n2) = -9999
+		End If
+	Next
+	If ncat > 0 Then
+		For n2 = 1 To ncat
+			rs1.Value(n1,nvar+n2) = sc.Category(1).Variable(n2).Value(n1)
+		Next
+	End If
+Next
+
+
+For n2 = 1 To nvar
+	For n1 = 1 To rs1.Cases.Count
+		If rs1.Value(n1,n2) = -9999 Then
+			rs1.DeleteCases(n1,n1)
+		Else
+			rs1.Value(n1,n2) = Log10(rs1.Value(n1,n2))
+		End If
+	Next n1
+Next n2
+
+If ncat > 0 Then
+	For n2 = 1 To ncat
+		For n1 = 1 To rs1.Cases.Count
+			If rs1.Value(n1,nvar+n2) = -9999 Then
+				rs1.DeleteCases(n1,n1)
+			End If
+		Next n1
+	Next n2
+End If
+
+Set rs3 = Spreadsheets.New
+rs3.DeleteCases (2,10)
+conta = 1
+
+Select Case ncat
+Case 0
+	O_Regr(rs1)
+	Set fn = sc.Functions.Add
+	For n3 = 1 To Spreadsheets.Count
+		If Spreadsheets.Item(n3).Name = "Differenti rette di regressione" Then
+			Set rs2 = Spreadsheets.Item(n3)
+			fn.Function = "G " & varlist(selvar) &" : y = "& CStr(10^rs2.Value(1,1)) &" * x ^"& CStr(rs2.Value(1,2))
+			Spreadsheets.Item(n3).Close
+		End If
+	Next
+Case 1
+	rs3.Visible=True
+	rs1.SortData(3)
+	valprima = rs1.Value(1,3)
+	For n1 = 1 To rs1.NumberOfCases
+		If valprima = rs1.Value(n1,3) Then
+			If conta > rs3.NumberOfCases Then rs3.AddCases(conta-1,1)
+		rs3.Value(conta,1)=rs1.Value(n1,1)
+		rs3.Value(conta,2)=rs1.Value(n1,2)
+		rs3.Value(conta,3)=rs1.Value(n1,3)
+		Else
+			O_Regr(rs3)
+			Set fn = sc.Functions.Add
+			For n3 = 1 To Spreadsheets.Count
+				If Spreadsheets.Item(n3).Name = "Differenti rette di regressione" Then
+					Set rs2 = Spreadsheets.Item(n3)
+					fn.Function = "G " & CStr(valprima) &" : y = "& 10^rs2.Value(1,1) &" * x ^"& rs2.Value(1,2)
+					Spreadsheets.Item(n3).Close
+				End If
+			Next
+			rs3.Close
+			Set rs3 = Spreadsheets.New
+			rs3.Visible=True
+			rs3.DeleteCases (2,10)
+			conta = 1
+			rs3.Value(conta,1)=rs1.Value(n1,1)
+			rs3.Value(conta,2)=rs1.Value(n1,2)
+			rs3.Value(conta,3)=rs1.Value(n1,3)
+			valprima = rs1.Value(n1,3)
+		End If
+		conta = conta + 1
+	Next
+	O_Regr(rs3)
+	Set fn = sc.Functions.Add
+	For n3 = 1 To Spreadsheets.Count
+		If Spreadsheets.Item(n3).Name = "Differenti rette di regressione" Then
+			Set rs2 = Spreadsheets.Item(n3)
+			fn.Function = "G " & CStr(valprima) &" : y = "& 10^rs2.Value(1,1) &" * x ^"& rs2.Value(1,2)
+			Spreadsheets.Item(n3).Close
+		End If
+	Next
+	rs3.Close
+End Select
+
+End Sub
+Private Function func(DlgItem$, Action%, SuppValue&) As Boolean
+
+	If Action% = 2 And DlgItem$ = "canc" Then End
+
+End Function
+
+
+Sub O_Regr(Dati As Spreadsheet)
+
+Dim rs As New Spreadsheet
+Dim SXX As Double, SYY As Double, SXY As Double
+Dim MX() As Double, SDX() As Double, MINX () As Double, MAXX() As Double, NX() As Long
+Dim MY() As Double, SDY() As Double, MINY () As Double, MAXY() As Double, NY() As Long
+Dim gamma1 As Double, gamma2 As Double
+Dim Data() As Double
+Dim zero() As Double
+Dim Beta (1 To 5) As Double
+Dim alfa (1 To 5) As Double
+Dim Name (1 To 5) As String
+Dim Gamma (1 To 2, 5) As Double
+Dim varbeta (1 To 5) As Double, cvarbeta As Double
+Dim varalfa (1 To 5) As Double
+Dim ncasi As Long, conta As Long
+Dim gp As Graph
+Dim sc As Layout2D
+Dim fn As Function2D
+Dim pl As Plot2D
+Dim Res As Spreadsheet
+Dim n As Integer, contat As Integer
+Dim func As String
+Dim legend As String
+Dim mediax As Double, mediay As Double
+
+
+ncasi=Dati.NumberOfCases
+
+
+ReDim Data (1 To 2, 1 To ncasi)
+ReDim zero (1 To 2, 1 To ncasi)
+
+' Si crea una matrice con i dati da correlare andando ad escludere i casi con valori mancanti
+
+For n = 1 To ncasi
+	Data(1,n)=Dati.Value(n,1)
+	Data(2,n)=Dati.Value(n,2)
+Next n
+
+Dati.Statistics(1,MX,SDX,MINX,MAXX,NX)
+Dati.Statistics(2,MY,SDY,MINY,MAXY,NY)
+
+mediax=MX(1)
+mediay=MY(1)
+
+' Calcolo della media dei casi senza valori mancanti
+
+For n = 1 To ncasi
+	zero(1,n) = Data(1,n)-mediax
+	zero(2,n) = Data(2,n)-mediay
+	SXX=SXX + (Data(1,n)-mediax)^2
+	SYY=SYY + (Data(2,n)-mediay)^2
+	SXY=SXY + (Data(1,n)-mediax)*(Data(2,n)-mediay)
+Next n
+
+'Calcolo delle varianze necessarie correlazioni e degli scarti di ogni valore dalla media
+
+Beta(1) = SXY/SXX
+Beta(2) = SYY/SXY
+Beta(3) = (Beta(1)+Beta(2))^-1*(Beta(1)*Beta(2)-1+Sqr((1+Beta(1)^2)*(1+Beta(2)^2)))
+Beta(4) = ((Beta(2)-1/Beta(1))+Sgn(SXY)*Sqr(4+(Beta(2)-1/Beta(1))^2))/2
+Beta(5) = Sgn(SXY)*Sqr(Beta(1)*Beta(2))
+
+' Calcolo delle pendenze delle varie curve di regressione
+
+Name(1) = "OLS"
+Name(2) = "OLS inverso"
+Name(3) = "OLS bisezionato"
+Name(4) = "Ortogonale"
+Name(5) = "RMA"
+
+' Assegnazione dei nomi delle varie curve di regressione
+
+For n = 1 To 5
+	alfa(n) = mediay - Beta(n)*mediax
+Next n
+
+' Calcolo delle intercette
+
+For n = 1 To ncasi
+	varbeta(1) = varbeta(1) + (zero(1,n)*(zero(2,n)-Beta(1)*zero(1,n)))^2
+	varbeta(2) = varbeta(2) + (zero(2,n)*(zero(2,n)-Beta(2)*zero(1,n)))^2
+	cvarbeta = cvarbeta+zero(1,n)*zero(2,n)*(zero(2,n)-Beta(1)*zero(1,n))*(zero(2,n)-Beta(2)*zero(1,n))
+Next n
+
+varbeta(1)=varbeta(1)/SXX^2
+varbeta(2)=varbeta(2)/SXY^2
+cvarbeta=1/(Beta(1)*SXX^2)*cvarbeta
+varbeta(3)=Beta(3)^2/(Beta(1)+Beta(2))^2/(1+Beta(1)^2)/(1+Beta(2)^2)*((1+Beta(2)^2)^2*varbeta(1)+2*(1+Beta(1)^2)*(1+Beta(2)^2)*cvarbeta+(1+Beta(1)^2)^2*varbeta(2))
+varbeta(4)=Beta(4)^2/(4*Beta(1)^2+(Beta(2)*Beta(1)-1)^2)*(Beta(1)^-2*varbeta(1)+2*cvarbeta+Beta(1)^2*varbeta(2))
+varbeta(5)=(Beta(2)/Beta(1)*varbeta(1)+2*cvarbeta+Beta(1)/Beta(2)*varbeta(2))/4
+
+' Calcolo delle varianze dei coefficenti angolari
+
+gamma1 = Beta(3)/((Beta(1)+Beta(2))*Sqr((1+Beta(1)^2)*(1+Beta(2)^2)))
+gamma2 = Beta(4)/Sqr(4*Beta(1)^2+(Beta(1)*Beta(2)-1)^2)
+
+Gamma(1,1) = 1
+Gamma(1,2) = 0
+Gamma(1,3) = gamma1*(1+Beta(2)^2)
+Gamma(1,4) = 1/gamma2*Abs(Beta(1))
+Gamma(1,5) = Sqr(Beta(2)/Beta(1))/2
+
+Gamma(2,1) = 0
+Gamma(2,2) = 1
+Gamma(2,3) = gamma1*(1+Beta(1)^2)
+Gamma(2,4) = Abs(Beta(1))*gamma2
+Gamma(2,5) = Sqr(Beta(1)/Beta(2))/2
+
+For n = 1 To ncasi
+	For contat = 1 To 5
+	varalfa(contat) = varalfa(contat) + (zero(2,n)-zero(1,n)*Beta(contat)-ncasi*mediax*(Gamma(1,conta)/SXX*zero(1,n)*(zero(2,n)-zero(1,n)*Beta(1))+Gamma(2,conta)/SXY*zero(2,n)*(zero(2,n)-Beta(2)*zero(1,n))))^2
+	Next contat
+Next n
+
+For n = 1 To 5
+	varalfa(n) = varalfa(n)/ncasi^2
+Next n
+
+' Calcolo delle varianze dei coefficenti angolari
+
+Set Res = Spreadsheets.New ("Differenti rette di regressione")
+Res.Header.Value = "Pendenze e intercette delle diverse curve di regressione y = alfa + beta * x"
+Res.DeleteCases 6,rs.Cases.Count
+Res.DeleteVariables 9,rs.Variables.Count
+Res.VariableName(1)="alfa"
+Res.VariableName(2)="beta"
+Res.VariableName(3)="var beta"
+Res.VariableName(4)="inf beta"
+Res.VariableName(5)="sup beta"
+Res.VariableName(6)="var alfa"
+Res.VariableName(7)="inf alfa"
+Res.VariableName(8)="sup alfa"
+
+
+For n = 1 To 5
+	Res.CaseName(n) = Name(n)
+	Res.Value (n,1) = alfa (n)
+	Res.Value (n,2) = Beta (n)
+	Res.Value (n,3) = Sqr(varbeta (n))
+	Res.Value (n,4) = Beta(n)-1.96*Sqr(varbeta (n))
+	Res.Value (n,5) = Beta(n)+1.96*Sqr(varbeta (n))
+	Res.Value (n,6) = Sqr(varalfa (n))
+	Res.Value (n,7) = alfa(n)-1.96*Sqr(varalfa (n))
+	Res.Value (n,8) = alfa(n)+1.96*Sqr(varalfa (n))
+Next n
+Res.AutoFitCase
+Res.EntireRange.AutoFit
+Res.Visible = True
+
+' Creazione della tabella
+
+End Sub
+
+'STATISTICA MACRO FILE VERSION 4
+'BEGINPROPERTIES
+'NAME=Power function
+'DESCRIPTION=
+'LANGUAGE=0
+'ENDPROPERTIES

@@ -1,0 +1,293 @@
+'#Reference {C9E29002-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29003-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29001-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900E-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29007-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29004-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29009-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900A-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900D-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29011-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29013-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29014-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901D-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2901A-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29019-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29018-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29021-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29016-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29015-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29012-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2900F-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29008-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29006-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29005-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29020-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29010-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2902C-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29024-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29028-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29029-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E2902B-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29036-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+'#Reference {C9E29017-3D45-11D4-9FF4-00C04FA0D540}#1.0#0#
+Sub Main
+
+Dim ADS As Spreadsheet,Sel As New Spreadsheet
+Dim gamma1 As Double, gamma2 As Double
+Dim ncasi As Long, conta As Long
+Dim gp As Graph
+Dim sc As Layout2D
+Dim fn As Function2D
+Dim pl As Plot2D
+Dim rs As Spreadsheet
+Dim n1 As Integer, conta1 As Integer
+Dim Func As String
+Dim legend As String
+Dim mediax As Double, mediay As Double
+
+Set ADS = SelectSpreadsheetDialog(False)
+If VarPtr(ADS) = 0 Then End
+' Selezione delle variabili da analizzare
+If SelectVariables2(ADS,"Seleziona le variabili",1,1,VD,NVD,"Variabile dipendente:",1,1,VI,NVI,"Variabile indipendente:") = 0 Then
+		End
+End If
+
+
+Sel.Visible=True
+Sel.VariableName(1) = "X"
+Sel.VariableName(2) = "Y"
+
+For n1= 1 To ADS.NumberOfCases
+	If ADS.CaseQualified(n1)= False Or ADS.Value(n1,VI) = -9999 Or ADS.Value(n1,VD) = -9999 Then conta1 = conta1 +1
+Next
+
+If (ADS.NumberOfCases-10-conta1)>1 Then Sel.AddCases(10,ADS.NumberOfCases-10-conta1)
+If (ADS.NumberOfCases-10-conta1)<1 Then Sel.DeleteCases(Sel.NumberOfCases+ADS.NumberOfCases-9-conta1,Sel.NumberOfCases)
+
+
+conta1 = 0
+
+For n1= 1 To ADS.NumberOfCases
+	If ADS.CaseQualified(n1)= False Or ADS.Value(n1,VI) = -9999 Or ADS.Value(n1,VD) = -9999 Then
+		conta1 = conta1 +1
+	Else
+		Sel.Value(n1-conta1,1)=ADS.Value(n1,VI)
+		Sel.Value(n1-conta1,2)=ADS.Value(n1,VD)
+	End If
+Next
+
+ncasi=Sel.NumberOfCases
+
+O_Regr(Sel)
+
+Set gp = Graphs.New
+Set sc = gp.GraphObject.CreateContent (scg2DGraph)
+Set pl = sc.Plots.Add (scgScatterPlot,ncasi)
+
+For n1 = 1 To ncasi
+	Debug.Print(CStr(Sel.Value(n1,1))&" "&CStr(Sel.Value(n1,2)))
+	pl.Variable (1).Value (n1) = Sel.Value(n1,1)
+	pl.Variable (2).Value (n1) = Sel.Value(n1,2)
+Next
+
+For n1 = 1 To Spreadsheets.Count
+		If Spreadsheets.Item(n1).Name = "Differenti rette di regressione" Then Set rs = Spreadsheets.Item(n1)
+Next
+
+
+For n1 = 1 To 5
+Set fn = sc.Functions.Add
+	If rs.Value(n1,2)> 0 Then Func = rs.CaseName(n1) &" : Y = "&CStr(rs.Value(n1,1))&" + "&CStr(rs.Value(n1,2))&"* x" Else Func = rs.CaseName(n1)&" : Y = "&CStr(rs.Value(n1,1))&" "&CStr(rs.Value(n1,2))&"*x"
+	fn.Function=Func
+	legend = legend & Func & vbCr
+Next
+gp.Titles.Add scgSubTitle, " "
+For n1 = 1 To 5
+	gp.Titles.Item(1).AppendCustomFunctionLineSymbol(n1)
+	gp.Titles.Item(1).AppendCustomFunctionEquation(n1)
+	gp.Titles.Item(1).AppendText vbCr
+Next
+
+gp.Titles.Add (scgFootnote, ADS.VariableName(VI))
+gp.Titles.Add (scgLeftTitle, ADS.VariableName (VD))
+gp.Titles.Add (scgMainTitle, "Differenti rette di regressione")
+
+
+pl.DisplayMarkers = True
+gp.Visible =True
+
+' Creazione del grafico
+
+End Sub
+Sub O_Regr(Dati As Spreadsheet)
+
+Dim rs As New Spreadsheet
+Dim SXX As Double, SYY As Double, SXY As Double
+Dim MX() As Double, SDX() As Double, MINX () As Double, MAXX() As Double, NX() As Long
+Dim MY() As Double, SDY() As Double, MINY () As Double, MAXY() As Double, NY() As Long
+Dim gamma1 As Double, gamma2 As Double
+Dim data() As Double
+Dim zero() As Double
+Dim Beta (1 To 5) As Double
+Dim Alfa (1 To 5) As Double
+Dim Name (1 To 5) As String
+Dim Gamma (1 To 2, 5) As Double
+Dim varbeta (1 To 5) As Double, cvarbeta As Double
+Dim varalfa (1 To 5) As Double
+Dim ncasi As Long, conta As Long
+Dim gp As Graph
+Dim sc As Layout2D
+Dim fn As Function2D
+Dim pl As Plot2D
+Dim Res As Spreadsheet
+Dim n As Integer, contat As Integer
+Dim Func As String
+Dim legend As String
+Dim mediax As Double, mediay As Double
+
+
+ncasi=Dati.NumberOfCases
+
+
+ReDim data (1 To 2, 1 To ncasi)
+ReDim zero (1 To 2, 1 To ncasi)
+
+' Si crea una matrice con i dati da correlare andando ad escludere i casi con valori mancanti
+
+
+For n = 1 To ncasi
+	data(1,n)=Dati.Value(n,1)
+	mediax=mediax+Dati.Value(n,1)
+	data(2,n)=Dati.Value(n,2)
+	mediay=mediai+Dati.Value(n,2)
+Next n
+
+'Dati.Statistics(1,MX,SDX,MINX,MAXX,NX)
+'Dati.Statistics(2,MY,SDY,MINY,MAXY,NY)
+
+
+'mediax=MX(1)
+'mediay=MY(1)
+mediax=mediax/ncasi
+mediay=mediay/ncasi
+
+' Calcolo della media dei casi senza valori mancanti
+
+For n = 1 To ncasi
+	zero(1,n) = data(1,n)-mediax
+	zero(2,n) = data(2,n)-mediay
+	SXX=SXX + (data(1,n)-mediax)^2
+	SYY=SYY + (data(2,n)-mediay)^2
+	SXY=SXY + (data(1,n)-mediax)*(data(2,n)-mediay)
+Next n
+
+'Calcolo delle varianze necessarie correlazioni e degli scarti di ogni valore dalla media
+
+Beta(1) = SXY/SXX
+Beta(2) = SYY/SXY
+Beta(3) = (Beta(1)+Beta(2))^-1*(Beta(1)*Beta(2)-1+Sqr((1+Beta(1)^2)*(1+Beta(2)^2)))
+Beta(4) = ((Beta(2)-1/Beta(1))+Sgn(SXY)*Sqr(4+(Beta(2)-1/Beta(1))^2))/2
+Beta(5) = Sgn(SXY)*Sqr(Beta(1)*Beta(2))
+
+' Calcolo delle pendenze delle varie curve di regressione
+
+Name(1) = "OLS"
+Name(2) = "OLS inverso"
+Name(3) = "OLS bisezionato"
+Name(4) = "Ortogonale"
+Name(5) = "RMA"
+
+' Assegnazione dei nomi delle varie curve di regressione
+
+For n = 1 To 5
+	Alfa(n) = mediay - Beta(n)*mediax
+Next n
+
+' Calcolo delle intercette
+
+For n = 1 To ncasi
+	varbeta(1) = varbeta(1) + (zero(1,n)*(zero(2,n)-Beta(1)*zero(1,n)))^2
+	varbeta(2) = varbeta(2) + (zero(2,n)*(zero(2,n)-Beta(2)*zero(1,n)))^2
+	cvarbeta = cvarbeta+zero(1,n)*zero(2,n)*(zero(2,n)-Beta(1)*zero(1,n))*(zero(2,n)-Beta(2)*zero(1,n))
+Next n
+
+varbeta(1)=varbeta(1)/SXX^2
+varbeta(2)=varbeta(2)/SXY^2
+cvarbeta=1/(Beta(1)*SXX^2)*cvarbeta
+varbeta(3)=Beta(3)^2/(Beta(1)+Beta(2))^2/(1+Beta(1)^2)/(1+Beta(2)^2)*((1+Beta(2)^2)^2*varbeta(1)+2*(1+Beta(1)^2)*(1+Beta(2)^2)*cvarbeta+(1+Beta(1)^2)^2*varbeta(2))
+varbeta(4)=Beta(4)^2/(4*Beta(1)^2+(Beta(2)*Beta(1)-1)^2)*(Beta(1)^-2*varbeta(1)+2*cvarbeta+Beta(1)^2*varbeta(2))
+varbeta(5)=(Beta(2)/Beta(1)*varbeta(1)+2*cvarbeta+Beta(1)/Beta(2)*varbeta(2))/4
+
+' Calcolo delle varianze dei coefficenti angolari
+
+gamma1 = Beta(3)/((Beta(1)+Beta(2))*Sqr((1+Beta(1)^2)*(1+Beta(2)^2)))
+gamma2 = Beta(4)/Sqr(4*Beta(1)^2+(Beta(1)*Beta(2)-1)^2)
+
+Gamma(1,1) = 1
+Gamma(1,2) = 0
+Gamma(1,3) = gamma1*(1+Beta(2)^2)
+Gamma(1,4) = 1/gamma2*Abs(Beta(1))
+Gamma(1,5) = Sqr(Beta(2)/Beta(1))/2
+
+Gamma(2,1) = 0
+Gamma(2,2) = 1
+Gamma(2,3) = gamma1*(1+Beta(1)^2)
+Gamma(2,4) = Abs(Beta(1))*gamma2
+Gamma(2,5) = Sqr(Beta(1)/Beta(2))/2
+
+For n = 1 To ncasi
+	For contat = 1 To 5
+	varalfa(contat) = varalfa(contat) + (zero(2,n)-zero(1,n)*Beta(contat)-ncasi*mediax*(Gamma(1,conta)/SXX*zero(1,n)*(zero(2,n)-zero(1,n)*Beta(1))+Gamma(2,conta)/SXY*zero(2,n)*(zero(2,n)-Beta(2)*zero(1,n))))^2
+	Next contat
+Next n
+
+For n = 1 To 5
+	varalfa(n) = varalfa(n)/ncasi^2
+Next n
+
+' Calcolo delle varianze dei coefficenti angolari
+
+Set Res = Spreadsheets.New ("Differenti rette di regressione")
+Res.Header.Value = "Pendenze e intercette delle diverse curve di regressione y = alfa + beta * x"
+Res.DeleteCases 6,rs.Cases.Count
+Res.DeleteVariables 9,rs.Variables.Count
+Res.VariableName(1)="alfa"
+Res.VariableName(2)="beta"
+Res.VariableName(3)="var beta"
+Res.VariableName(4)="inf beta"
+Res.VariableName(5)="sup beta"
+Res.VariableName(6)="var alfa"
+Res.VariableName(7)="inf alfa"
+Res.VariableName(8)="sup alfa"
+
+
+For n = 1 To 5
+	Res.CaseName(n) = Name(n)
+	Res.Value (n,1) = Alfa (n)
+	Res.Value (n,2) = Beta (n)
+	Res.Value (n,3) = Sqr(varbeta (n))
+	Res.Value (n,4) = Beta(n)-1.96*Sqr(varbeta (n))
+	Res.Value (n,5) = Beta(n)+1.96*Sqr(varbeta (n))
+	Res.Value (n,6) = Sqr(varalfa (n))
+	Res.Value (n,7) = Alfa(n)-1.96*Sqr(varalfa (n))
+	Res.Value (n,8) = Alfa(n)+1.96*Sqr(varalfa (n))
+Next n
+Res.AutoFitCase
+Res.EntireRange.AutoFit
+Res.Visible = True
+
+' Creazione della tabella
+
+End Sub
+
+'STATISTICA MACRO FILE VERSION 4
+'BEGINPROPERTIES
+'NAME=Regressioni
+'DESCRIPTION=
+'LANGUAGE=0
+'ENDPROPERTIES
